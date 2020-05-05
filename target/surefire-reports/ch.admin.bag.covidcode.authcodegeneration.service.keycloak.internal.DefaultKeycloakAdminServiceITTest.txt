@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: ch.admin.bag.covidcode.authcodegeneration.service.keycloak.internal.DefaultKeycloakAdminServiceITTest
+-------------------------------------------------------------------------------
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 6, Time elapsed: 3.97 s - in ch.admin.bag.covidcode.authcodegeneration.service.keycloak.internal.DefaultKeycloakAdminServiceITTest

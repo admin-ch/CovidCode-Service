@@ -1,0 +1,20 @@
+authcodegeneration:
+  service:
+    keycloak:
+      realm: "bag-pts-test"
+      uri: https://identity-a.bit.admin.ch
+      masterPassword: ${vcap.services.keycloak_test.credentials.masterPassword}
+      clientSecret: ${vcap.services.keycloak_test.credentials.clientSecret}
+
+jeap:
+  monitor:
+    prometheus:
+      password: ${vcap.services.ha_prometheus_test.credentials.password}
+  security:
+    oauth2:
+      resourceserver:
+        authorization-server:
+          issuer: "https://identity-a.bit.admin.ch/realms/bag-pts"
+
+ha-authcode-generation-service:
+  allowed-origin: "https://www.covidcode-t.admin.ch"

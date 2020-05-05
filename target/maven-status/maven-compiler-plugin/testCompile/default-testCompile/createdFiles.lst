@@ -1,0 +1,12 @@
+ch/admin/bag/covidcode/authcodegeneration/service/AuthCodeDeletionServiceTest.class
+ch/admin/bag/covidcode/authcodegeneration/web/controller/AuthCodeGenerationControllerTest.class
+ch/admin/bag/covidcode/authcodegeneration/testutil/LocalDateSerializer.class
+ch/admin/bag/covidcode/authcodegeneration/domain/AuthorizationCodeRepositoryTest.class
+ch/admin/bag/covidcode/authcodegeneration/service/AuthCodeGenerationServiceTest.class
+ch/admin/bag/covidcode/authcodegeneration/web/controller/AuthCodeVerificationControllerTest.class
+ch/admin/bag/covidcode/authcodegeneration/service/keycloak/internal/DefaultKeycloakAdminServiceTest.class
+ch/admin/bag/covidcode/authcodegeneration/service/keycloak/internal/DefaultKeycloakAdminServiceITTest.class
+ch/admin/bag/covidcode/authcodegeneration/service/AuthCodeVerificationServiceTest.class
+ch/admin/bag/covidcode/authcodegeneration/web/monitoring/AuthorizationCodeCountMeterTest.class
+ch/admin/bag/covidcode/authcodegeneration/testutil/LoggerTestUtil.class
+ch/admin/bag/covidcode/authcodegeneration/service/AuthCodeDeletionServiceITTest.class

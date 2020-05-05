@@ -1,0 +1,12 @@
+/home/dev/development/projects/ha-authcode-generation-service/src/test/java/ch/admin/bag/covidcode/authcodegeneration/service/AuthCodeDeletionServiceTest.java
+/home/dev/development/projects/ha-authcode-generation-service/src/test/java/ch/admin/bag/covidcode/authcodegeneration/service/AuthCodeGenerationServiceTest.java
+/home/dev/development/projects/ha-authcode-generation-service/src/test/java/ch/admin/bag/covidcode/authcodegeneration/service/AuthCodeDeletionServiceITTest.java
+/home/dev/development/projects/ha-authcode-generation-service/src/test/java/ch/admin/bag/covidcode/authcodegeneration/testutil/LoggerTestUtil.java
+/home/dev/development/projects/ha-authcode-generation-service/src/test/java/ch/admin/bag/covidcode/authcodegeneration/service/keycloak/internal/DefaultKeycloakAdminServiceITTest.java
+/home/dev/development/projects/ha-authcode-generation-service/src/test/java/ch/admin/bag/covidcode/authcodegeneration/service/AuthCodeVerificationServiceTest.java
+/home/dev/development/projects/ha-authcode-generation-service/src/test/java/ch/admin/bag/covidcode/authcodegeneration/web/monitoring/AuthorizationCodeCountMeterTest.java
+/home/dev/development/projects/ha-authcode-generation-service/src/test/java/ch/admin/bag/covidcode/authcodegeneration/web/controller/AuthCodeGenerationControllerTest.java
+/home/dev/development/projects/ha-authcode-generation-service/src/test/java/ch/admin/bag/covidcode/authcodegeneration/domain/AuthorizationCodeRepositoryTest.java
+/home/dev/development/projects/ha-authcode-generation-service/src/test/java/ch/admin/bag/covidcode/authcodegeneration/testutil/LocalDateSerializer.java
+/home/dev/development/projects/ha-authcode-generation-service/src/test/java/ch/admin/bag/covidcode/authcodegeneration/service/keycloak/internal/DefaultKeycloakAdminServiceTest.java
+/home/dev/development/projects/ha-authcode-generation-service/src/test/java/ch/admin/bag/covidcode/authcodegeneration/web/controller/AuthCodeVerificationControllerTest.java
