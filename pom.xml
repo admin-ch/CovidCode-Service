@@ -223,20 +223,4 @@
 		</repository>
 	</distributionManagement>
 
-	<repositories>
-		<repository>
-			<id>maven-public</id>
-			<name>Maven Public Group</name>
-			<url>https://repo.bit.admin.ch/repository/maven-public/</url>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>maven-public</id>
-			<name>Maven Public Group</name>
-			<url>https://repo.bit.admin.ch/repository/maven-public/</url>
-		</pluginRepository>
-	</pluginRepositories>
-
 </project>
