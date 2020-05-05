@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: ch.admin.bag.covidcode.authcodegeneration.service.AuthCodeVerificationServiceTest
--------------------------------------------------------------------------------
-Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.126 s - in ch.admin.bag.covidcode.authcodegeneration.service.AuthCodeVerificationServiceTest
