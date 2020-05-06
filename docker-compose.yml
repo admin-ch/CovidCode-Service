@@ -33,6 +33,7 @@ services:
     volumes:
       - dbdata:/var/lib/postgresql/data
       - ./devsupport/keycloak/create-database-and-user.sql:/docker-entrypoint-initdb.d/create-keycloak-database-and-user.sql
+      - ./devsupport/haauthcodegeneration/create-database-and-user.sql:/docker-entrypoint-initdb.d/create-haauthcodegeneration-database-and-user.sql
 
   keycloak:
     image: jboss/keycloak
