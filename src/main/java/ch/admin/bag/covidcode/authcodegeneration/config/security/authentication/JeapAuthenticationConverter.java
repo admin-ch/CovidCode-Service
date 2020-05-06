@@ -69,7 +69,7 @@ public class JeapAuthenticationConverter implements Converter<Jwt, AbstractAuthe
     private Map extractBusinesspartnerRolesFromB2B(Jwt jwt) {
         List roles = Optional.of(jwt)
                 .map(Jwt::getClaims)
-                .flatMap(map -> getIfPossible(map, ROLES_CLAIM, List.class))
+                .flatMap(map -> getIfPossible(map, BUSINESS_PARTNER_ROLES_CLAIM, List.class))
                 .orElse(Collections.emptyList());
 
         Collection<String> bpRoles = new HashSet<>();
@@ -86,7 +86,7 @@ public class JeapAuthenticationConverter implements Converter<Jwt, AbstractAuthe
     private Map extractBusinesspartnerRolesFromSysOrUser(Jwt jwt) {
         return Optional.of(jwt)
                 .map(Jwt::getClaims)
-                .flatMap(map -> getIfPossible(map, BUSINESS_PARTNER_ROLES_CLAIM, Map.class))
+                .flatMap(map -> getIfPossible(map, ROLES_CLAIM, Map.class))
                 .orElse(Collections.emptyMap());
     }
 
