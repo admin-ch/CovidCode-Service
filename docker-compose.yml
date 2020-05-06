@@ -1,0 +1,32 @@
+# docker-compose.yml for developer support
+#
+# Usage:
+#
+#  docker-compose up -d
+#
+# Port allocation scheme:
+#   3113    The PostgreSQL database
+#   4200    The Angular UI (not part of this project)
+#   8113    The covidcode back-end server (not managed by docker-compose)
+
+version: "3"
+
+# To purge all state, stop all containers and say
+#
+#    docker volume rm covidcode_dbdata
+#
+# This will erase the PostgreSQL database. Then start everything again
+volumes:
+  dbdata:
+
+services:
+
+  db:
+    image: "postgres:11"
+    container_name: "dp3t_postgres"
+    ports:
+      - "3113:5432"
+    environment:
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - dbdata:/var/lib/postgresql/data
