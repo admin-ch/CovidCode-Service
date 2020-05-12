@@ -8,8 +8,8 @@ http://localhost:8113/swagger-ui.html
 To start up the application locally, run a new PostgreSQL 11+ database on port 3113.
 
 ## JWT Generation
-- Use Profile "keycloak-token-provider" to generate a jwt with keycloak (it requires keycloak)
-- Default generation uses a custom generator with library JJWT
+- Use Profile "keycloak-token-provider" to generate a jwt with keycloak (it requires keycloak).
+- Default generation uses a custom generator with library JJWT.
 
 ## Lombok
  Project uses Lombok. Configure your IDE with lombok plugin.
