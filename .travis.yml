@@ -31,3 +31,7 @@ deploy:
   skip_cleanup: true
   on:
     branch: master
+
+branches:
+  except:
+    - /^[v]*\d+\.\d+(\.\d+)?(-\S*)?$
