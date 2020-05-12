@@ -1,0 +1,10 @@
+version: '3'
+services:
+  db-authcodegeneration:
+    image: repo.bit.admin.ch:8444/bit/postgresql:latest
+    ports:
+      - "3113:5432"
+    environment:
+      - POSTGRES_USER=haauthcodegeneration
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=haauthcodegeneration

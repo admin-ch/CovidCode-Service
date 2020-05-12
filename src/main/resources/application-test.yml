@@ -1,0 +1,25 @@
+authcodegeneration:
+  jwt:
+    issuer: "https://identity-a.bit.admin.ch/realms/bag-pts-test"
+    token-validity: 300000
+    privateKey: ${vcap.services.signingKey_test.credentials.privateKey}
+  monitor:
+    prometheus:
+      user: "prometheus"
+      password: ${vcap.services.ha_prometheus_test.credentials.password}
+  service:
+    keycloak:
+      realm: "bag-pts-test"
+      uri: https://identity-a.bit.admin.ch
+      masterPassword: ${vcap.services.keycloak_test.credentials.masterPassword}
+      clientSecret: ${vcap.services.keycloak_test.credentials.clientSecret}
+
+jeap:
+  security:
+    oauth2:
+      resourceserver:
+        authorization-server:
+          issuer: "https://identity-a.bit.admin.ch/realms/bag-pts-test"
+
+ha-authcode-generation-service:
+  allowed-origin: "https://www.covidcode-t.admin.ch"

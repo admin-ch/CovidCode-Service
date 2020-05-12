@@ -1,0 +1,25 @@
+authcodegeneration:
+  jwt:
+    issuer: "https://identity-a.bit.admin.ch/realms/bag-pts"
+    token-validity: 300000
+    privateKey: ${vcap.services.signingKey_abn.credentials.privateKey}
+  monitor:
+    prometheus:
+      user: "prometheus"
+      password: ${vcap.services.ha_prometheus_abn.credentials.password}
+  service:
+    keycloak:
+      realm: "bag-pts"
+      uri: https://identity-a.bit.admin.ch
+      masterPassword: ${vcap.services.keycloak_abn.credentials.masterPassword}
+      clientSecret: ${vcap.services.keycloak_abn.credentials.clientSecret}
+
+jeap:
+  security:
+    oauth2:
+      resourceserver:
+        authorization-server:
+          issuer: "https://identity-a.bit.admin.ch/realms/bag-pts"
+
+ha-authcode-generation-service:
+  allowed-origin: "https://www.covidcode-a.admin.ch"

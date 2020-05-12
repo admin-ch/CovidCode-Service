@@ -1,0 +1,33 @@
+language: java
+
+jdk:
+  - oraclejdk11
+
+# see https://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure
+sudo: false
+
+# cache the build tool's caches
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/.gradle
+
+addons:
+  sonarcloud:
+    organization: "admin-ch"
+
+script:
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent verify sonar:sonar
+
+before_deploy:
+  # Set up git user name and tag this commit
+  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
+  - git tag $TRAVIS_TAG
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file: target/ha-authcode-generation-service.jar
+  skip_cleanup: true
+  on:
+    branch: master
