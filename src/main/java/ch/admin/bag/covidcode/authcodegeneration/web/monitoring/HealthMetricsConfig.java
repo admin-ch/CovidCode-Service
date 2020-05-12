@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcode.authcodegeneration.web.monitoring;
 
 
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.boot.actuate.health.Status;
@@ -12,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 class HealthMetricsConfig {
 
     @Bean
-    public MeterRegistryCustomizer prometheusHealthCheck(HealthEndpoint healthEndpoint) {
+    public MeterRegistryCustomizer<MeterRegistry> prometheusHealthCheck(HealthEndpoint healthEndpoint) {
         return registry -> registry.gauge("health", healthEndpoint, HealthMetricsConfig::healthToCode);
     }
 
