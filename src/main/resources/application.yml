@@ -116,6 +116,7 @@ authcodegeneration:
         codeExpirationDelay: 1440
         deletionCron: "0 30 1 * * ?"
         onsetSubtractionDays: 3
+        sleepTime: 5
     monitor:
         prometheus:
             secure: false

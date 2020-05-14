@@ -59,17 +59,11 @@ public class CustomTokenProvider implements TokenProvider {
                 .setId(UUID.randomUUID().toString())
                 .setIssuer(issuer)
                 .setIssuedAt(now)
-                .setSubject(UUID.randomUUID().toString())
+                .setNotBefore(now)
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .claim("typ", "Bearer")
                 .claim("scope", "exposed")
                 .claim("fake", fake)
                 .claim("onset", onsetDate)
-                .claim("azp", "pta-app-backend")
-                .claim("auth_time", 0)
-                .claim("acr", "1")
-                .claim("nbf", 0)
-                .claim("uuid", UUID.randomUUID().toString())
                 .signWith(signingKey);
 
         builder.setExpiration(new Date(nowMillis + tokenValidity));

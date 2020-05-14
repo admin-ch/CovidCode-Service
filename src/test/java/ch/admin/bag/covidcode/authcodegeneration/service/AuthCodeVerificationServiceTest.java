@@ -30,25 +30,29 @@ class AuthCodeVerificationServiceTest {
 
     private static final String FAKE_NOT_FAKE = "0";
     private static final String FAKE_FAKE = "1";
+    private static final String SLEEP_TIME_KEY = "sleepTime";
+    private static final String CALL_COUNT_LIMIT_KEY = "callCountLimit";
+    private static final String TEST_AUTHORIZATION_CODE = "123456789";
+    private static final String TEST_ACCESS_TOKEN = "QRMwjii77";
+    private static final int CODE_EXPIRATION_DELAY_IN_SECONDS = 10;
+    private static final int CALL_COUNT_LIMIT = 3;
+    private static final int SLEEP_TIME = 3;
 
     @Mock
     private AuthorizationCodeRepository repository;
+
     @Mock
     private TokenProvider tokenProvider;
 
     @InjectMocks
     private AuthCodeVerificationService testee;
 
-    private static final String TEST_AUTHORIZATION_CODE = "123456789";
-    private static final String TEST_ACCESS_TOKEN = "QRMwjii77";
-    private static final int CODE_EXPIRATION_DELAY_IN_SECONDS = 10;
-    private static final int CALL_COUNT_LIMIT = 3;
-
     @Test
     public void test_verify() {
         //given
         AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now().minusDays(3), ZonedDateTime.now().plusSeconds(CODE_EXPIRATION_DELAY_IN_SECONDS));
-        ReflectionTestUtils.setField(testee, "callCountLimit", CALL_COUNT_LIMIT);
+        ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
+        ReflectionTestUtils.setField(testee, SLEEP_TIME_KEY, SLEEP_TIME);
         when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));
         when(tokenProvider.createToken(anyString(), anyString())).thenReturn(TEST_ACCESS_TOKEN);
 
@@ -62,13 +66,14 @@ class AuthCodeVerificationServiceTest {
     @Test
     public void test_verify_with_yml_prop_callCountLimit() throws Exception {
         //setup
-        Path file = Path.of("","src/main/resources").resolve("application.yml");
+        Path file = Path.of("", "src/main/resources").resolve("application.yml");
         Map<String, Object> yamlMaps = new Yaml().load(Files.readString(file));
         final Map<String, Map<String, Object>> obj = (Map<String, Map<String, Object>>) yamlMaps.get("authcodegeneration");
-        int callCountLimit = Integer.parseInt(obj.get("service").get("callCountLimit").toString());
+        int callCountLimit = Integer.parseInt(obj.get("service").get(CALL_COUNT_LIMIT_KEY).toString());
         //given
         AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now().minusDays(3), ZonedDateTime.now().plusSeconds(CODE_EXPIRATION_DELAY_IN_SECONDS));
-        ReflectionTestUtils.setField(testee, "callCountLimit", callCountLimit);
+        ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, callCountLimit);
+        ReflectionTestUtils.setField(testee, SLEEP_TIME_KEY, SLEEP_TIME);
         when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));
         when(tokenProvider.createToken(anyString(), anyString())).thenReturn(TEST_ACCESS_TOKEN);
 
@@ -83,7 +88,8 @@ class AuthCodeVerificationServiceTest {
     public void test_verify_token_onset_date_is_equal_original_minus_3_days() {
         //given
         AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now().minusDays(3), ZonedDateTime.now().plusSeconds(CODE_EXPIRATION_DELAY_IN_SECONDS));
-        ReflectionTestUtils.setField(testee, "callCountLimit", CALL_COUNT_LIMIT);
+        ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
+        ReflectionTestUtils.setField(testee, SLEEP_TIME_KEY, SLEEP_TIME);
         when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));
         when(tokenProvider.createToken(anyString(), anyString())).thenReturn(TEST_ACCESS_TOKEN);
 
@@ -99,7 +105,8 @@ class AuthCodeVerificationServiceTest {
     public void test_verify_call_count_reached() {
         //given
         AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now().minusDays(3), ZonedDateTime.now().plusSeconds(CODE_EXPIRATION_DELAY_IN_SECONDS));
-        ReflectionTestUtils.setField(testee, "callCountLimit", CALL_COUNT_LIMIT);
+        ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
+        ReflectionTestUtils.setField(testee, SLEEP_TIME_KEY, SLEEP_TIME);
         when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));
         when(tokenProvider.createToken(anyString(), anyString())).thenReturn(TEST_ACCESS_TOKEN);
 
@@ -112,11 +119,11 @@ class AuthCodeVerificationServiceTest {
     }
 
 
-
     @Test
     public void test_verify_call_fake_count_never_reached() {
         //given
-        ReflectionTestUtils.setField(testee, "callCountLimit", CALL_COUNT_LIMIT);
+        ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
+        ReflectionTestUtils.setField(testee, SLEEP_TIME_KEY, SLEEP_TIME);
         when(tokenProvider.createToken(anyString(), anyString())).thenReturn(TEST_ACCESS_TOKEN);
 
         //when
