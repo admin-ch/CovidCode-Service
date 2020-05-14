@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Random;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,27 +21,25 @@ import java.time.format.DateTimeFormatter;
 public class AuthCodeVerificationService {
 
     private static final String FAKE_STRING = "1";
-
-    private final AuthorizationCodeRepository authorizationCodeRepository;
-
-    private final TokenProvider tokenProvider;
-
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("YYYY-MM-dd");
-
+    private final AuthorizationCodeRepository authorizationCodeRepository;
+    private final TokenProvider tokenProvider;
 
     @Value("${authcodegeneration.service.callCountLimit}")
     private int callCountLimit;
 
+    @Value("${authcodegeneration.service.sleepTime}")
+    private int sleepTime;
+
     @Transactional
     public AuthorizationCodeVerifyResponseDto verify(String code, String fake) {
 
-        AuthorizationCode existingCode;
+        AuthorizationCode existingCode = authorizationCodeRepository.findByCode(code).orElse(null);
 
         if (FAKE_STRING.equals(fake)) {
             log.debug("Fake Call of verification !");
             existingCode = AuthorizationCode.createFake();
         } else {
-            existingCode = authorizationCodeRepository.findByCode(code).orElse(null);
             if (existingCode == null) {
                 log.error("No AuthCode found with code '{}'", code);
                 throw new ResourceNotFoundException(null);
@@ -57,6 +56,11 @@ public class AuthCodeVerificationService {
         try {
             String token = tokenProvider.createToken(existingCode.getOnsetDate().format(DATE_FORMATTER), fake);
             existingCode.incrementCallCount();
+
+            if (FAKE_STRING.equals(fake)) {
+                Thread.sleep((new Random().nextInt(sleepTime) + 1));
+            }
+
             return new AuthorizationCodeVerifyResponseDto(token);
         } catch (Exception e) {
             log.error("Error during Keycloak Token Generation", e);
