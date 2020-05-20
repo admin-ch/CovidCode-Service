@@ -115,8 +115,9 @@ authcodegeneration:
         callCountLimit: 1
         codeExpirationDelay: 1440
         deletionCron: "0 30 1 * * ?"
-        onsetSubtractionDays: 3
-        sleepTime: 5
+        onsetSubtractionDays: 2
+        minSleepTime: 3
+        maxSleepTime: 8
     monitor:
         prometheus:
             secure: false
