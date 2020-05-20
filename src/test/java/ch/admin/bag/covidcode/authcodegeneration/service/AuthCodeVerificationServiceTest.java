@@ -49,7 +49,7 @@ class AuthCodeVerificationServiceTest {
     private AuthCodeVerificationService testee;
 
     @Test
-    public void test_verify() {
+    void test_verify() {
         //given
         AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now().minusDays(3), ZonedDateTime.now().plusSeconds(CODE_EXPIRATION_DELAY_IN_SECONDS));
         ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
@@ -66,7 +66,7 @@ class AuthCodeVerificationServiceTest {
     }
 
     @Test
-    public void test_verify_with_yml_prop_callCountLimit() throws Exception {
+    void test_verify_with_yml_prop_callCountLimit() throws Exception {
         //setup
         Path file = Path.of("", "src/main/resources").resolve("application.yml");
         Map<String, Object> yamlMaps = new Yaml().load(Files.readString(file));
@@ -88,7 +88,7 @@ class AuthCodeVerificationServiceTest {
     }
 
     @Test
-    public void test_verify_token_onset_date_is_equal_original_minus_3_days() {
+    void test_verify_token_onset_date_is_equal_original_minus_3_days() {
         //given
         AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now().minusDays(3), ZonedDateTime.now().plusSeconds(CODE_EXPIRATION_DELAY_IN_SECONDS));
         ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
@@ -106,7 +106,7 @@ class AuthCodeVerificationServiceTest {
     }
 
     @Test
-    public void test_verify_call_count_reached() {
+    void test_verify_call_count_reached() {
         //given
         AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now().minusDays(3), ZonedDateTime.now().plusSeconds(CODE_EXPIRATION_DELAY_IN_SECONDS));
         ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
@@ -125,7 +125,7 @@ class AuthCodeVerificationServiceTest {
 
 
     @Test
-    public void test_verify_call_fake_count_never_reached() {
+    void test_verify_call_fake_count_never_reached() {
         //given
         ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
         ReflectionTestUtils.setField(testee, MIN_SLEEP_TIME_KEY, SLEEP_TIME);
@@ -144,7 +144,7 @@ class AuthCodeVerificationServiceTest {
 
 
     @Test
-    public void test_verify_code_not_found() {
+    void test_verify_code_not_found() {
         //given
         when(repository.findByCode(anyString())).thenReturn(Optional.empty());
         //when
@@ -153,7 +153,7 @@ class AuthCodeVerificationServiceTest {
     }
 
     @Test
-    public void test_verify_code_validity_expired() {
+    void test_verify_code_validity_expired() {
         //given
         AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now().minusDays(3), ZonedDateTime.now());
         when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));

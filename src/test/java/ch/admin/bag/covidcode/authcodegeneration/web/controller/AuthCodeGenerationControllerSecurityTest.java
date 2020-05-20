@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(value = {AuthCodeGenerationController.class, OAuth2SecuredWebConfiguration.class})
 @ActiveProfiles("local")
-public class AuthCodeGenerationControllerSecurityTest {
+class AuthCodeGenerationControllerSecurityTest {
 
     private static final String URL = "/v1/authcode";
     private static final String VALID_USER_ROLE = "bag-pts-allow";
@@ -56,7 +56,7 @@ public class AuthCodeGenerationControllerSecurityTest {
     private static WireMockServer wireMockServer = new WireMockServer(options().port(MOCK_SERVER_PORT));
 
     @BeforeAll
-    public static void setup() throws Exception {
+    static void setup() throws Exception {
         wireMockServer.start();
         wireMockServer.stubFor(get(urlPathEqualTo("/.well-known/jwks.json")).willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
@@ -68,24 +68,24 @@ public class AuthCodeGenerationControllerSecurityTest {
     }
 
     @AfterAll
-    public static void teardown() {
+    static void teardown() {
         wireMockServer.stop();
     }
 
     @Test
-    public void test_create_authorization_with_valid_token() throws Exception {
+    void test_create_authorization_with_valid_token() throws Exception {
         test_call_create_with_token(EXPIRED_IN_FUTURE, VALID_USER_ROLE, HttpStatus.OK);
         verify(service, times(1)).create(any(AuthorizationCodeCreateDto.class));
     }
 
     @Test
-    public void test_create_authorization_with_valid_token_but_wrong_userrole() throws Exception {
+    void test_create_authorization_with_valid_token_but_wrong_userrole() throws Exception {
         test_call_create_with_token(EXPIRED_IN_FUTURE, INVALID_USER_ROLE, HttpStatus.FORBIDDEN);
         verify(service, times(0)).create(any(AuthorizationCodeCreateDto.class));
     }
 
     @Test
-    public void test_create_authorization_with_expired_token() throws Exception {
+    void test_create_authorization_with_expired_token() throws Exception {
         test_call_create_with_token(EXPIRED_IN_PAST, VALID_USER_ROLE, HttpStatus.UNAUTHORIZED);
         verify(service, times(0)).create(any(AuthorizationCodeCreateDto.class));
     }

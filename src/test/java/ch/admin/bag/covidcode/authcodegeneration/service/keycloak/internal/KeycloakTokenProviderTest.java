@@ -26,7 +26,7 @@ class KeycloakTokenProviderTest {
 
 
     @Test
-    public void test_createToken() {
+    void test_createToken() {
         //given
         when(keycloakAdminService.getAccessTokenToMasterRealm()).thenReturn(TEST_ACCESS_TOKEN);
         when(keycloakAdminService.getAccessTokenToBackend(anyString(), anyString())).thenReturn(TEST_ACCESS_TOKEN);

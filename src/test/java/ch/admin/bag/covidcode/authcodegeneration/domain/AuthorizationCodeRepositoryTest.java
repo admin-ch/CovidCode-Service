@@ -26,7 +26,7 @@ import static org.hamcrest.core.Is.is;
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @ActiveProfiles("local")
-public class AuthorizationCodeRepositoryTest {
+class AuthorizationCodeRepositoryTest {
 
     @Autowired
     private AuthorizationCodeRepository repository;
@@ -36,7 +36,7 @@ public class AuthorizationCodeRepositoryTest {
 
     @Test
     @Transactional
-    public void findById_FoundOne() {
+    void findById_FoundOne() {
         //given
         AuthorizationCode initial = new AuthorizationCode("123456789000", LocalDate.now(), LocalDate.now(), ZonedDateTime.now());
         entityManager.persist(initial);
