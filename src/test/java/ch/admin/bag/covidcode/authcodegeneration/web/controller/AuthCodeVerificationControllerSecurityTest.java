@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(value = {AuthCodeVerificationController.class, OAuth2SecuredWebConfiguration.class, WebSecurityConfig.class})
 @ActiveProfiles("local")
-public class AuthCodeVerificationControllerSecurityTest {
+class AuthCodeVerificationControllerSecurityTest {
 
     private static final String URL = "/v1/onset";
     private static final String TEST_AUTHORIZATION_CODE = "123456789";
@@ -41,14 +41,14 @@ public class AuthCodeVerificationControllerSecurityTest {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @BeforeAll
-    public static void setup() {
+    static void setup() {
         SimpleModule module = new SimpleModule();
         module.addSerializer(LocalDate.class, new LocalDateSerializer());
         MAPPER.registerModule(module);
     }
 
     @Test
-    public void test_verify_authorization_without_token_is_permitted() throws Exception {
+    void test_verify_authorization_without_token_is_permitted() throws Exception {
         AuthorizationCodeVerificationDto verificationDto = new AuthorizationCodeVerificationDto(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
         mockMvc.perform(post(URL)
                 .accept(MediaType.APPLICATION_JSON_VALUE)

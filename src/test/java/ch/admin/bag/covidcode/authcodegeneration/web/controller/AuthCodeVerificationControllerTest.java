@@ -38,12 +38,12 @@ class AuthCodeVerificationControllerTest {
     private ObjectMapper mapper = new ObjectMapper();
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         this.mockMvc = standaloneSetup(controller).build();
     }
 
     @Test
-    public void test_verify() throws Exception {
+    void test_verify() throws Exception {
         //given
         AuthorizationCodeVerificationDto verificationDto = new AuthorizationCodeVerificationDto(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
         AuthorizationCodeVerifyResponseDto responseDto = new AuthorizationCodeVerifyResponseDto(DUMMY_STR);
@@ -65,7 +65,7 @@ class AuthCodeVerificationControllerTest {
     }
 
     @Test
-    public void test_verify_not_found_exception() throws Exception {
+    void test_verify_not_found_exception() throws Exception {
         //given
         AuthorizationCodeVerificationDto verificationDto = new AuthorizationCodeVerificationDto(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
 

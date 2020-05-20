@@ -28,8 +28,11 @@ public class AuthCodeVerificationService {
     @Value("${authcodegeneration.service.callCountLimit}")
     private int callCountLimit;
 
-    @Value("${authcodegeneration.service.sleepTime}")
-    private int sleepTime;
+    @Value("${authcodegeneration.service.minSleepTime}")
+    private int minSleepTime;
+
+    @Value("${authcodegeneration.service.maxSleepTime}")
+    private int maxSleepTime;
 
     @Transactional
     public AuthorizationCodeVerifyResponseDto verify(String code, String fake) {
@@ -58,7 +61,7 @@ public class AuthCodeVerificationService {
             existingCode.incrementCallCount();
 
             if (FAKE_STRING.equals(fake)) {
-                Thread.sleep((new Random().nextInt(sleepTime) + 1));
+                Thread.sleep((new Random().nextInt(maxSleepTime) + minSleepTime));
             }
 
             return new AuthorizationCodeVerifyResponseDto(token);

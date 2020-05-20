@@ -60,7 +60,7 @@ class AuthCodeGenerationControllerTest {
     private ObjectMapper mapper = new ObjectMapper();
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         this.mockMvc = standaloneSetup(controller).build();
         SimpleModule module = new SimpleModule();
         module.addSerializer(LocalDate.class, new LocalDateSerializer());
@@ -68,7 +68,7 @@ class AuthCodeGenerationControllerTest {
     }
 
     @Test
-    public void test_create() throws Exception {
+    void test_create() throws Exception {
         //given
         AuthorizationCodeCreateDto createDto = new AuthorizationCodeCreateDto(LocalDate.now());
         AuthorizationCodeResponseDto responseDto = new AuthorizationCodeResponseDto(TEST_AUTHORIZATION_CODE);
@@ -90,7 +90,7 @@ class AuthCodeGenerationControllerTest {
     }
 
     @Test
-    public void test_create_with_claim_display_name() throws Exception {
+    void test_create_with_claim_display_name() throws Exception {
         //setup
         ListAppender<ILoggingEvent> loggingEventListAppender = LoggerTestUtil.getListAppenderForClass(AuthCodeGenerationController.class);
         //given
@@ -116,7 +116,7 @@ class AuthCodeGenerationControllerTest {
     }
 
     @Test
-    public void test_create_bad_request_exception() throws Exception {
+    void test_create_bad_request_exception() throws Exception {
         //given
         AuthorizationCodeCreateDto createDto = new AuthorizationCodeCreateDto(LocalDate.now().plusDays(1));
         when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(new JeapAuthenticationToken(JWT, Collections.emptySet()));

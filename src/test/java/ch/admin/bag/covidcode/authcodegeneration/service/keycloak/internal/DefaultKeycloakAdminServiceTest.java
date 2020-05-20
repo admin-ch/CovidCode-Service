@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class DefaultKeycloakAdminServiceTest {
+class DefaultKeycloakAdminServiceTest {
     private static final String TEST_USER = "U123";
     private static final String TEST_PWD = "test";
     private static final String TEST_TOKEN = "test";
@@ -47,7 +47,7 @@ public class DefaultKeycloakAdminServiceTest {
     private DefaultKeycloakAdminService testee;
 
     @Test
-    public void test_getAccessTokenToMasterRealm() {
+    void test_getAccessTokenToMasterRealm() {
         //given
         ReflectionTestUtils.setField(testee, SERVICE_URL_KEY, SERVICE_URL_VALUE);
         ResponseEntity<String> response = new ResponseEntity<>(TOKEN_RESPONSE_BODY, HttpStatus.OK);
@@ -61,7 +61,7 @@ public class DefaultKeycloakAdminServiceTest {
     }
 
     @Test
-    public void test_getAccessTokenToMasterRealm_exception() {
+    void test_getAccessTokenToMasterRealm_exception() {
         //given
         ReflectionTestUtils.setField(testee, SERVICE_URL_KEY, SERVICE_URL_VALUE);
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), any(Class.class))).thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
@@ -72,7 +72,7 @@ public class DefaultKeycloakAdminServiceTest {
     }
 
     @Test
-    public void test_getAccessTokenToMasterRealm_no_response_body_exception() {
+    void test_getAccessTokenToMasterRealm_no_response_body_exception() {
         //given
         ReflectionTestUtils.setField(testee, SERVICE_URL_KEY, SERVICE_URL_VALUE);
         ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.OK);
@@ -84,7 +84,7 @@ public class DefaultKeycloakAdminServiceTest {
     }
 
     @Test
-    public void test_getAccessTokenToBackend() {
+    void test_getAccessTokenToBackend() {
         //given
         ReflectionTestUtils.setField(testee, SERVICE_URL_KEY, SERVICE_URL_VALUE);
         ResponseEntity<String> response = new ResponseEntity<>(TOKEN_RESPONSE_BODY, HttpStatus.OK);
@@ -98,7 +98,7 @@ public class DefaultKeycloakAdminServiceTest {
     }
 
     @Test
-    public void test_getUserIdValue() {
+    void test_getUserIdValue() {
         //given
         ReflectionTestUtils.setField(testee, SERVICE_URL_KEY, SERVICE_URL_VALUE);
         ResponseEntity<String> response = new ResponseEntity<>(USERS_RESPONSE_BODY, HttpStatus.OK);
@@ -112,7 +112,7 @@ public class DefaultKeycloakAdminServiceTest {
     }
 
     @Test
-    public void test_getUserIdValue_no_user_id_exception() {
+    void test_getUserIdValue_no_user_id_exception() {
         //given
         ReflectionTestUtils.setField(testee, SERVICE_URL_KEY, SERVICE_URL_VALUE);
         ResponseEntity<String> response = new ResponseEntity<>(INVALID_USERS_RESPONSE_BODY, HttpStatus.OK);
@@ -124,7 +124,7 @@ public class DefaultKeycloakAdminServiceTest {
     }
 
     @Test
-    public void test_getUserIdValue_no_response_body_exception() {
+    void test_getUserIdValue_no_response_body_exception() {
         //given
         ReflectionTestUtils.setField(testee, SERVICE_URL_KEY, SERVICE_URL_VALUE);
         ResponseEntity<String> response = new ResponseEntity<>(HttpStatus.OK);
@@ -136,7 +136,7 @@ public class DefaultKeycloakAdminServiceTest {
     }
 
     @Test
-    public void test_createUser() {
+    void test_createUser() {
         //setup
         ListAppender<ILoggingEvent> loggingEventListAppender = LoggerTestUtil.getListAppenderForClass(DefaultKeycloakAdminService.class);
         //given
@@ -152,7 +152,7 @@ public class DefaultKeycloakAdminServiceTest {
     }
 
     @Test
-    public void test_createUser_exception() {
+    void test_createUser_exception() {
         //given
         ReflectionTestUtils.setField(testee, SERVICE_URL_KEY, SERVICE_URL_VALUE);
         ResponseEntity<String> response = new ResponseEntity<>(TOKEN_RESPONSE_BODY, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -164,7 +164,7 @@ public class DefaultKeycloakAdminServiceTest {
     }
 
     @Test
-    public void test_resetPassword() {
+    void test_resetPassword() {
         //setup
         ListAppender<ILoggingEvent> loggingEventListAppender = LoggerTestUtil.getListAppenderForClass(DefaultKeycloakAdminService.class);
         //given
@@ -180,7 +180,7 @@ public class DefaultKeycloakAdminServiceTest {
     }
 
     @Test
-    public void test_resetPassword_exception() {
+    void test_resetPassword_exception() {
         //given
         ReflectionTestUtils.setField(testee, SERVICE_URL_KEY, SERVICE_URL_VALUE);
         ResponseEntity<String> response = new ResponseEntity<>(TOKEN_RESPONSE_BODY, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -192,7 +192,7 @@ public class DefaultKeycloakAdminServiceTest {
     }
 
     @Test
-    public void test_deleteUser() {
+    void test_deleteUser() {
         //setup
         ListAppender<ILoggingEvent> loggingEventListAppender = LoggerTestUtil.getListAppenderForClass(DefaultKeycloakAdminService.class);
         //given
@@ -208,7 +208,7 @@ public class DefaultKeycloakAdminServiceTest {
     }
 
     @Test
-    public void test_deleteUser_exception() {
+    void test_deleteUser_exception() {
         //given
         ReflectionTestUtils.setField(testee, SERVICE_URL_KEY, SERVICE_URL_VALUE);
         ResponseEntity<String> response = new ResponseEntity<>(TOKEN_RESPONSE_BODY, HttpStatus.INTERNAL_SERVER_ERROR);

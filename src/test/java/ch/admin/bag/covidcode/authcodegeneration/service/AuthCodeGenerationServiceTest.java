@@ -27,7 +27,7 @@ class AuthCodeGenerationServiceTest {
     private AuthCodeGenerationService testee;
 
     @Test
-    public void test_create() {
+    void test_create() {
         //given
         AuthorizationCodeCreateDto createDto = new AuthorizationCodeCreateDto(LocalDate.now().minusWeeks(2));
         when(repository.existsByCode(anyString())).thenReturn(false);
@@ -41,7 +41,7 @@ class AuthCodeGenerationServiceTest {
     }
 
     @Test
-    public void test_create_code_already_exists() {
+    void test_create_code_already_exists() {
         //given
         AuthorizationCodeCreateDto createDto = new AuthorizationCodeCreateDto(LocalDate.now());
         when(repository.existsByCode(anyString())).thenReturn(true).thenReturn(false);
@@ -55,7 +55,7 @@ class AuthCodeGenerationServiceTest {
     }
 
     @Test
-    public void test_create_invalid_onset_date_in_future() {
+    void test_create_invalid_onset_date_in_future() {
         //given
         AuthorizationCodeCreateDto createDto = new AuthorizationCodeCreateDto(LocalDate.now().plusDays(1));
         //when
@@ -64,7 +64,7 @@ class AuthCodeGenerationServiceTest {
     }
 
     @Test
-    public void test_create_invalid_onset_date_too_far_back() {
+    void test_create_invalid_onset_date_too_far_back() {
         //given
         AuthorizationCodeCreateDto createDto = new AuthorizationCodeCreateDto(LocalDate.of(2017,7,7));
         //when
@@ -73,7 +73,7 @@ class AuthCodeGenerationServiceTest {
     }
 
     @Test
-    public void test_create_invalid_onset_date_4_weeks_plus_one_day_back() {
+    void test_create_invalid_onset_date_4_weeks_plus_one_day_back() {
         //given
         AuthorizationCodeCreateDto createDto = new AuthorizationCodeCreateDto(LocalDate.now().minusWeeks(4).minusDays(1));
         //when
@@ -82,7 +82,7 @@ class AuthCodeGenerationServiceTest {
     }
 
     @Test
-    public void test_create_valid_onset_date_exactly_4_weeks_back() {
+    void test_create_valid_onset_date_exactly_4_weeks_back() {
         //given
         AuthorizationCodeCreateDto createDto = new AuthorizationCodeCreateDto(LocalDate.now().minusWeeks(4));
         //when
@@ -94,7 +94,7 @@ class AuthCodeGenerationServiceTest {
     }
 
     @Test
-    public void test_create_valid_onset_date_exactly_now() {
+    void test_create_valid_onset_date_exactly_now() {
         //given
         AuthorizationCodeCreateDto createDto = new AuthorizationCodeCreateDto(LocalDate.now());
         //when
