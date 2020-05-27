@@ -43,7 +43,7 @@ class AuthCodeVerificationServiceTest {
     private AuthorizationCodeRepository repository;
 
     @Mock
-    private TokenProvider tokenProvider;
+    private CustomTokenProvider tokenProvider;
 
     @InjectMocks
     private AuthCodeVerificationService testee;

@@ -11,12 +11,6 @@ authcodegeneration:
     prometheus:
       user: "prometheus"
       password: "{noop}secret"
-  service:
-    keycloak:
-      realm: "bag-pts"
-      uri: http://localhost
-      masterPassword: secret
-      clientSecret: secret
 
 jeap:
   security:

@@ -23,7 +23,7 @@ public class AuthCodeVerificationService {
     private static final String FAKE_STRING = "1";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("YYYY-MM-dd");
     private final AuthorizationCodeRepository authorizationCodeRepository;
-    private final TokenProvider tokenProvider;
+    private final CustomTokenProvider tokenProvider;
 
     @Value("${authcodegeneration.service.callCountLimit}")
     private int callCountLimit;
@@ -66,7 +66,7 @@ public class AuthCodeVerificationService {
 
             return new AuthorizationCodeVerifyResponseDto(token);
         } catch (Exception e) {
-            log.error("Error during Keycloak Token Generation", e);
+            log.error("Error during Token Generation", e);
             throw new IllegalStateException("Internal Error");
         }
     }

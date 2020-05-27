@@ -1,13 +1,11 @@
-package ch.admin.bag.covidcode.authcodegeneration.service.jwt;
+package ch.admin.bag.covidcode.authcodegeneration.service;
 
-import ch.admin.bag.covidcode.authcodegeneration.service.TokenProvider;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -21,8 +19,7 @@ import java.util.UUID;
 
 @Component
 @Slf4j
-@Profile("!keycloak-token-provider")
-public class CustomTokenProvider implements TokenProvider {
+public class CustomTokenProvider {
 
     @Value("${authcodegeneration.jwt.token-validity}")
     private long tokenValidity;
@@ -40,7 +37,6 @@ public class CustomTokenProvider implements TokenProvider {
         rsa = KeyFactory.getInstance("RSA");
     }
 
-    @Override
     public String createToken(String onsetDate, String fake) {
         final long nowMillis = System.currentTimeMillis();
         final Date now = new Date(nowMillis);
