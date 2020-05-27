@@ -1,5 +1,6 @@
-package ch.admin.bag.covidcode.authcodegeneration.service.jwt;
+package ch.admin.bag.covidcode.authcodegeneration.service;
 
+import ch.admin.bag.covidcode.authcodegeneration.service.CustomTokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;

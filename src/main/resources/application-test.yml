@@ -7,12 +7,6 @@ authcodegeneration:
     prometheus:
       user: "prometheus"
       password: ${vcap.services.ha_prometheus_test.credentials.password}
-  service:
-    keycloak:
-      realm: "bag-pts-test"
-      uri: https://identity-a.bit.admin.ch
-      masterPassword: ${vcap.services.keycloak_test.credentials.masterPassword}
-      clientSecret: ${vcap.services.keycloak_test.credentials.clientSecret}
 
 jeap:
   security:

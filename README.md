@@ -8,8 +8,26 @@ Swagger-UI is running on http://localhost:8113/swagger-ui.html.
 To start up the application locally, run a new PostgreSQL 11+ database on port 3113.
 
 ## JWT Generation
-- Use Profile "keycloak-token-provider" to generate a jwt with keycloak (it requires keycloak).
-- Default generation uses a custom generator with library JJWT.
+- JWT generation uses a custom generator with library JJWT.
 
 ## Lombok
- Project uses Lombok. Configure your IDE with lombok plugin.
+Project uses Lombok. Configure your IDE with lombok plugin.
+ 
+## Configuration
+These parameters can be configured. You can find example values in application-local.yml.
+
+The validity of the generated JWT:  
+authcodegeneration.jwt.token-validity
+
+The issuer to set in the generated JWT:  
+authcodegeneration.jwt.issuer
+
+The private key to sign the generated JWT:  
+authcodegeneration.jwt.privateKey
+
+The Prometheus actuator endpoint is secured with username and password:  
+authcodegeneration.monitor.prometheus.user  
+authcodegeneration.monitor.prometheus.password
+
+The allowed origin configuration for the authcode generation:  
+ha-authcode-generation-service.allowed-origin
