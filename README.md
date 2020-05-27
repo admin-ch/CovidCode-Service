@@ -14,20 +14,20 @@ To start up the application locally, run a new PostgreSQL 11+ database on port 3
 Project uses Lombok. Configure your IDE with lombok plugin.
  
 ## Configuration
-These parameters can be configured. You can find example values in application-local-yml.
+These parameters can be configured. You can find example values in application-local.yml.
 
-The validity of the generated token:
+The validity of the generated JWT:  
 authcodegeneration.jwt.token-validity
 
-The issuer to set in the JWT:
+The issuer to set in the generated JWT:  
 authcodegeneration.jwt.issuer
 
-The private key to sign the JWT:
+The private key to sign the generated JWT:  
 authcodegeneration.jwt.privateKey
 
-The Prometheus actuator endpoint is secured with username and password:
-authcodegeneration.monitor.prometheus.user
+The Prometheus actuator endpoint is secured with username and password:  
+authcodegeneration.monitor.prometheus.user  
 authcodegeneration.monitor.prometheus.password
 
-The allowed origin configuration for the authcode generation:
+The allowed origin configuration for the authcode generation:  
 ha-authcode-generation-service.allowed-origin
