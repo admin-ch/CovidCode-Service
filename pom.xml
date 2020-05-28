@@ -33,7 +33,7 @@
 			**/*Dto.java
 		</sonar.cpd.exclusions>
 		<sonar.coverage.exclusions>
-			**/*Dto.java,**/config/*,**/*Exception.java,**/*Constants.java,**/*Registry.java,**/*Config.java,**/*Mock*,**/*Application.java
+			**/*Dto.java,**/config/*,**/*Exception.java,**/*Constants.java,**/*Registry.java,**/*Config.java,**/*Mock*,**/*Application.java,**/*HttpResponseHeaderFilter.java,**/*ActuatorSecurity.java
 		</sonar.coverage.exclusions>
 	</properties>
 
