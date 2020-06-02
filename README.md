@@ -13,6 +13,11 @@ The other profiles run the script afterMigrate to reassign the owner of the obje
 
 ## Lombok
 Project uses Lombok. Configure your IDE with lombok plugin.
+
+## Security
+The API is secured and a valid JWT should be provided. Note that these 2 values are needed  
+- ctx:USER
+- the audience must be set to ha-authcodegeneration
  
 ## Configuration
 These parameters can be configured. You can find example values in application-local.yml.
