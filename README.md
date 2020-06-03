@@ -9,7 +9,8 @@ To start up the application locally, run a new PostgreSQL 11+ database on port 3
 The other profiles run the script afterMigrate to reassign the owner of the objects.
 
 ### Dockerfile
-The docker file is provided only to run the application locally without DB. This configuration starts a PostgreSQL 11 on port 3113.
+The docker file is provided only to run the application locally without DB. This configuration starts a PostgreSQL 11 on port 3113.  
+Docker Official Image from https://hub.docker.com/_/postgres.
 
 ## JWT Generation
 JWT generation uses a custom generator with library JJWT.

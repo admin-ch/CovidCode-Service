@@ -1,7 +1,7 @@
 version: '3'
 services:
   db-authcodegeneration:
-    image: repo.bit.admin.ch:8444/bit/postgresql:latest
+    image: postgres
     ports:
       - "3113:5432"
     environment:
