@@ -8,8 +8,11 @@ Swagger-UI is running on http://localhost:8113/swagger-ui.html.
 To start up the application locally, run a new PostgreSQL 11+ database on port 3113. Use the profile "local" to run the application.
 The other profiles run the script afterMigrate to reassign the owner of the objects.
 
+### Dockerfile
+The docker file is provided only to run the application locally without DB. This configuration starts a PostgreSQL 11 on port 3113.
+
 ## JWT Generation
-- JWT generation uses a custom generator with library JJWT.
+JWT generation uses a custom generator with library JJWT.
 
 ## Lombok
 Project uses Lombok. Configure your IDE with lombok plugin.
