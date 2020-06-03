@@ -5,13 +5,23 @@ HA-AuthCode-Generation-Service is an authorization code generation service for t
 Swagger-UI is running on http://localhost:8113/swagger-ui.html.
 
 ## PostgreSQL database
-To start up the application locally, run a new PostgreSQL 11+ database on port 3113.
+To start up the application locally, run a new PostgreSQL 11+ database on port 3113. Use the profile "local" to run the application.
+The other profiles run the script afterMigrate to reassign the owner of the objects.
+
+### Dockerfile
+The docker file is provided only to run the application locally without DB. This configuration starts a PostgreSQL 11 on port 3113.  
+Docker Official Image from https://hub.docker.com/_/postgres.
 
 ## JWT Generation
-- JWT generation uses a custom generator with library JJWT.
+JWT generation uses a custom generator with library JJWT.
 
 ## Lombok
 Project uses Lombok. Configure your IDE with lombok plugin.
+
+## Security
+The API is secured and a valid JWT should be provided. Note that these 2 values are needed  
+- ctx:USER
+- the audience must be set to ha-authcodegeneration
  
 ## Configuration
 These parameters can be configured. You can find example values in application-local.yml.

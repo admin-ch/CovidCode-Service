@@ -162,4 +162,19 @@ class AuthCodeVerificationServiceTest {
         assertThrows(ResourceNotFoundException.class, () -> testee.verify(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE));
     }
 
+    @Test
+    void test_verify_exception_token_provider() {
+        //given
+        AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now(), ZonedDateTime.now().plusDays(1));
+        when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));
+        ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
+        ReflectionTestUtils.setField(testee, MIN_SLEEP_TIME_KEY, SLEEP_TIME);
+        ReflectionTestUtils.setField(testee, MAX_SLEEP_TIME_KEY, SLEEP_TIME);
+        when(tokenProvider.createToken(anyString(), anyString())).thenThrow(new NullPointerException());
+
+        //when
+        //then
+        assertThrows(IllegalStateException.class, () -> testee.verify(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE));
+    }
+
 }
