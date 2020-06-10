@@ -9,6 +9,7 @@
 #   4200    The Angular UI (not part of this project)
 #   8113    The covidcode back-end server (not managed by docker-compose)
 #   8180    The Keycloak server, exposed through Træfik with some URL rewriting
+#   9000    SonarQube, a source code linter and metrics renderer (e.g. for test coverage)
 
 version: "3"
 
@@ -79,3 +80,8 @@ services:
       ## Uncomment the following line to expose the Træfik dashboard
       ## on port 8080:
       # - "8080:8080"
+
+  sonarqube:
+    image: sonarqube:community
+    ports:
+      - "9000:9000"
