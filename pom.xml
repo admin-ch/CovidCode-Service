@@ -230,7 +230,7 @@
               <configuration>
                 <mainClass>ch.admin.bag.covidcode.authcodegeneration.AuthCodeGenerationServiceApplication</mainClass>
                 <arguments>
-                  <argument>--spring.profiles.active=local</argument>
+                  <argument>--spring.profiles.active=local,keycloak-local</argument>
                 </arguments>
               </configuration>
             </plugin>
