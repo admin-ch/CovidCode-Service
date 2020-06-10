@@ -8,7 +8,7 @@
 #   3113    The PostgreSQL database
 #   4200    The Angular UI (not part of this project)
 #   8113    The covidcode back-end server (not managed by docker-compose)
-#   8181    The Keycloak server, in direct access (e.g. for administering with a browser)
+#   8180    The Keycloak server, exposed through Træfik with some URL rewriting
 
 version: "3"
 
@@ -48,5 +48,34 @@ services:
       KEYCLOAK_IMPORT: /tmp/realm-bag-pts-localhost.json
     volumes:
       - ./devsupport/keycloak/realm-bag-pts-localhost.json:/tmp/realm-bag-pts-localhost.json
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak.entrypoints=web"
+      - "traefik.http.routers.keycloak.rule=PathPrefix(`/`)"  # i.e. accept anything
+      # Rewrite URLs so that e.g.
+      # http://localhost:8180/.well-known/openid-configuration
+      # works (as expected by ha-ui in its dev configuration):
+      - "traefik.http.routers.keycloak.middlewares=rewrite-url-oidc"
+      - "traefik.http.middlewares.rewrite-url-oidc.replacepathregex.regex=^/(\\.well-known/.*)$$"
+      - "traefik.http.middlewares.rewrite-url-oidc.replacepathregex.replacement=/auth/realms/bag-pts/$$1"
+
+  traefik:
+    image: traefik:2.2.1
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    command:
+      - "--entrypoints.web.address=:80"
+      ## Enable docker provider
+      - "--providers.docker=true"
+      ## Do not expose containers unless explicitly told so
+      - "--providers.docker.exposedbydefault=false"
+      ## Uncomment the following two lines to turn on the Træfik
+      ## dashboard (handy for troubleshooting errors in the
+      ## `traefik.*` labels, above):
+      # - "--api.dashboard=true"
+      # - "--api.insecure=true"
     ports:
-      - "8181:8080"
+      - "8180:80"
+      ## Uncomment the following line to expose the Træfik dashboard
+      ## on port 8080:
+      # - "8080:8080"
