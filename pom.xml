@@ -222,6 +222,18 @@
 					<useSystemClassLoader>false</useSystemClassLoader>
 				</configuration>
             </plugin>
+            <!-- Run the server with `mvn exec:java` -->
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>exec-maven-plugin</artifactId>
+              <version>1.2.1</version>
+              <configuration>
+                <mainClass>ch.admin.bag.covidcode.authcodegeneration.AuthCodeGenerationServiceApplication</mainClass>
+                <arguments>
+                  <argument>--spring.profiles.active=local,keycloak-local</argument>
+                </arguments>
+              </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>

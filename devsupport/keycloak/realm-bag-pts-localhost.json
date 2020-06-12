@@ -1,0 +1,80 @@
+{
+  "id": "BAG-PTS",
+  "realm": "bag-pts",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "ha-ui-web-client",
+      "rootUrl": "https://www.covidcode-d.admin.ch",
+      "adminUrl": "",
+      "publicClient": true,
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "redirectUris": [
+        "http://localhost:4200/*"
+      ],
+      "webOrigins": [
+        "http://localhost:4200"
+      ],
+      "protocolMappers": [
+        {
+          "id": "showRolesInUserinfoAsUserroles",
+          "name": "Realm Mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "usermodel.clientRoleMapping.rolePrefix": "bag-pts-",
+            "multivalued": "true",
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "userroles",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "id": "hardcodedCtxClaim",
+          "name": "Context Claim",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-hardcoded-claim-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "false",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "ctx",
+            "claim.value": "USER",
+            "jsonType.label": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "bag-pts-allow",
+        "description": "Grant this role to users, so that they can use ha-ui",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "BAG-PTS",
+        "attributes": {}
+      }
+    ]
+  },
+  "users" : [
+    {
+      "username" : "doctor",
+      "enabled": true,
+      "email" : "doctor@example.com",
+      "firstName": "Doctor",
+      "lastName": "Example",
+      "credentials" : [
+        { "type" : "password",
+          "value" : "doctor" }
+      ],
+      "realmRoles": [ "bag-pts-allow" ]
+    }
+  ]
+}
