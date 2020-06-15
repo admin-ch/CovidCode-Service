@@ -32,14 +32,16 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = {AuthCodeGenerationController.class, OAuth2SecuredWebConfiguration.class})
+@WebMvcTest(value = {AuthCodeGenerationController.class, OAuth2SecuredWebConfiguration.class},
+            properties="jeap.security.oauth2.resourceserver.authorization-server.jwk-set-uri=http://localhost:8182/.well-known/jwks.json")  // Avoid port 8180, see below
 @ActiveProfiles("local")
 class AuthCodeGenerationControllerSecurityTest {
 
     private static final String URL = "/v1/authcode";
     private static final String VALID_USER_ROLE = "bag-pts-allow";
     private static final String INVALID_USER_ROLE = "invalid-role";
-    private static final int MOCK_SERVER_PORT = 8180;
+    // Avoid port 8180, which is likely used by the local KeyCloak:
+    private static final int MOCK_SERVER_PORT = 8182;
 
     @Autowired
     private MockMvc mockMvc;
@@ -53,7 +55,9 @@ class AuthCodeGenerationControllerSecurityTest {
     private static final LocalDateTime EXPIRED_IN_FUTURE = LocalDateTime.now().plusDays(1);
     private static final LocalDateTime EXPIRED_IN_PAST = LocalDateTime.now().minusDays(1);
 
-    private static WireMockServer wireMockServer = new WireMockServer(options().port(MOCK_SERVER_PORT));
+    private static WireMockServer wireMockServer =
+        // new WireMockServer(options().dynamicPort());
+        new WireMockServer(options().port(MOCK_SERVER_PORT));
 
     @BeforeAll
     static void setup() throws Exception {

@@ -1,0 +1,11 @@
+# Specific configuration for running CovidCode-Service so that it
+# talks to the local Keycloak (the one of ../../../docker-compose.yml)
+
+jeap:
+  security:
+    oauth2:
+      resourceserver:
+        authorization-server:
+          issuer: "http://localhost:8180/auth/realms/bag-pts"
+          jwk-set-uri: ~
+

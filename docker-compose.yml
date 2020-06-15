@@ -1,0 +1,88 @@
+# docker-compose.yml for developer support
+#
+# Usage:
+#
+#  docker-compose up -d
+#
+# Port allocation scheme:
+#   3113    The PostgreSQL database
+#   4200    The Angular UI (not part of this project)
+#   8113    The covidcode back-end server (not managed by docker-compose)
+#   8180    The Keycloak server, exposed through Træfik with some URL rewriting
+#   9000    SonarQube, a source code linter and metrics renderer (e.g. for test coverage)
+
+version: "3"
+
+# To purge all state, stop all containers and say
+#
+#    docker volume rm covidcode_dbdata
+#
+# This will erase the PostgreSQL database. Then start everything again
+volumes:
+  dbdata:
+
+services:
+
+  db:
+    image: "postgres:11"
+    container_name: "dp3t_postgres"
+    ports:
+      - "3113:5432"
+    environment:
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+      - ./devsupport/keycloak/create-database-and-user.sql:/docker-entrypoint-initdb.d/create-keycloak-database-and-user.sql
+      - ./devsupport/haauthcodegeneration/create-database-and-user.sql:/docker-entrypoint-initdb.d/create-haauthcodegeneration-database-and-user.sql
+
+  keycloak:
+    image: jboss/keycloak
+    container_name: "keycloak"
+    environment:
+      # https://hub.docker.com/r/jboss/keycloak
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: masterPassword
+      DB_VENDOR: postgres
+      DB_ADDR: db
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: keycloak
+      KEYCLOAK_IMPORT: /tmp/realm-bag-pts-localhost.json
+    volumes:
+      - ./devsupport/keycloak/realm-bag-pts-localhost.json:/tmp/realm-bag-pts-localhost.json
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak.entrypoints=web"
+      - "traefik.http.routers.keycloak.rule=PathPrefix(`/`)"  # i.e. accept anything
+      # Rewrite URLs so that e.g.
+      # http://localhost:8180/.well-known/openid-configuration
+      # works (as expected by ha-ui in its dev configuration):
+      - "traefik.http.routers.keycloak.middlewares=rewrite-url-oidc"
+      - "traefik.http.middlewares.rewrite-url-oidc.replacepathregex.regex=^/(\\.well-known/.*)$$"
+      - "traefik.http.middlewares.rewrite-url-oidc.replacepathregex.replacement=/auth/realms/bag-pts/$$1"
+
+  traefik:
+    image: traefik:2.2.1
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    command:
+      - "--entrypoints.web.address=:80"
+      ## Enable docker provider
+      - "--providers.docker=true"
+      ## Do not expose containers unless explicitly told so
+      - "--providers.docker.exposedbydefault=false"
+      ## Uncomment the following two lines to turn on the Træfik
+      ## dashboard (handy for troubleshooting errors in the
+      ## `traefik.*` labels, above):
+      # - "--api.dashboard=true"
+      # - "--api.insecure=true"
+    ports:
+      - "8180:80"
+      ## Uncomment the following line to expose the Træfik dashboard
+      ## on port 8080:
+      # - "8080:8080"
+
+  sonarqube:
+    image: sonarqube:community
+    ports:
+      - "9000:9000"

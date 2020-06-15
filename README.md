@@ -1,11 +1,79 @@
 # HA-AuthCode-Generation-Service (CovidCode-Service)
 HA-AuthCode-Generation-Service is an authorization code generation service for the CovidCode-UI and the proximity tracing app.
 
+# Developer Instructions
+
+## Initial setup
+
+Do this once:
+
+1. Install a JDK (tested with Oracle JDK v11 and OpenjDK 1.8.0)
+1. [Install Maven](https://maven.apache.org/install.html)
+1. Install [Docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/install/)
+1. Check out [CovidCode-UI](https://github.com/admin-ch/CovidCode-UI) in another directory
+
+## Development Cycle
+
+Do this at the beginning of your session:
+1. Run <pre>docker-compose up -d
+docker-compose logs -f</pre> and wait for the logs to become quiescent
+1. Run CovidCode-UI in another window (`ng serve`)
+
+To run manual tests, you can run CovidCode-Service with the `local`
+and `keycloak-local` Spring profiles using the following command:
+```
+mvn compile exec:java
+```
+(or the equivalent using your IDE's Maven functionality, if you
+require access to a debugger)
+
+To run the test suite:
+```
+mvn verify
+```
+
+To perform a clean build, and run the test suite with full code coverage
+and upload the data to a locally-running SonarQube:
+```
+mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent verify sonar:sonar
+```
+SonarQube results are thereafter visible at http://localhost:9000/
+
+To tear down the development support environment (but retain its state on-disk):
+```
+docker-compose down
+```
+
+To wipe everything:
+```
+docker-compose down
+docker volume rm covidcode_dbdata
+mvn clean
+```
+
 ## Swagger-UI
 Swagger-UI is running on http://localhost:8113/swagger-ui.html.
 
+## Local KeyCloak instance
+
+If CovidCode-Service is being run as suggested above, it will perform
+authentication and access control against an OIDC / OAuth server
+running on http://localhost:8180/ (and so will CovidCode-UI in its
+default development configuration).
+
+The credentials for the KeyCloak administrator are visible in
+docker-compose.yml in section `keycloak:`. Additionally, KeyCloak is
+automatically pre-populated with a `bag-pts` realm, containing a
+`doctor` account (password `doctor`) that enjoys access to both
+CovidCode-UI and CovidCode-Service.
+
 ## PostgreSQL database
-To start up the application locally, run a new PostgreSQL 11+ database on port 3113. Use the profile "local" to run the application.
+
+docker-compose runs a new PostgreSQL database on port 3113 and takes
+care of setting it up. The superuser credentials are in
+`docker-compose.yml`.
+
+The "local" Spring profile should be used to run the application (see above).
 The other profiles run the script afterMigrate to reassign the owner of the objects.
 
 ### Dockerfile
