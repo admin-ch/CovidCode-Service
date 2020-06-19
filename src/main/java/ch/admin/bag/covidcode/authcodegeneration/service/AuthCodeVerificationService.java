@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Random;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,23 +27,18 @@ public class AuthCodeVerificationService {
     @Value("${authcodegeneration.service.callCountLimit}")
     private int callCountLimit;
 
-    @Value("${authcodegeneration.service.minSleepTime}")
-    private int minSleepTime;
-
-    @Value("${authcodegeneration.service.maxSleepTime}")
-    private int maxSleepTime;
-
-    private static final Random rand = new Random();
-
     @Transactional
     public AuthorizationCodeVerifyResponseDto verify(String code, String fake) {
 
-        AuthorizationCode existingCode = authorizationCodeRepository.findByCode(code).orElse(null);
+        AuthorizationCode existingCode;
 
         if (FAKE_STRING.equals(fake)) {
             log.debug("Fake Call of verification !");
             existingCode = AuthorizationCode.createFake();
         } else {
+
+            existingCode = authorizationCodeRepository.findByCode(code).orElse(null);
+
             if (existingCode == null) {
                 log.error("No AuthCode found with code '{}'", code);
                 throw new ResourceNotFoundException(null);
@@ -61,11 +55,6 @@ public class AuthCodeVerificationService {
         try {
             String token = tokenProvider.createToken(existingCode.getOnsetDate().format(DATE_FORMATTER), fake);
             existingCode.incrementCallCount();
-
-            if (FAKE_STRING.equals(fake)) {
-                Thread.sleep((rand.nextInt(maxSleepTime) + minSleepTime));
-            }
-
             return new AuthorizationCodeVerifyResponseDto(token);
         } catch (Exception e) {
             log.error("Error during Token Generation", e);

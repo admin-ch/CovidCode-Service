@@ -63,8 +63,6 @@ public class CustomTokenProvider {
                 .signWith(signingKey);
 
         builder.setExpiration(new Date(nowMillis + tokenValidity));
-
-        log.debug("Generating Custom Token");
         return builder.compact();
     }
 
