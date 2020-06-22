@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcode.authcodegeneration.web.controller;
 
 import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeVerificationDto;
+import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeVerifyResponseDto;
 import ch.admin.bag.covidcode.authcodegeneration.config.security.OAuth2SecuredWebConfiguration;
 import ch.admin.bag.covidcode.authcodegeneration.service.AuthCodeVerificationService;
 import ch.admin.bag.covidcode.authcodegeneration.testutil.LocalDateSerializer;
@@ -19,8 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -49,12 +49,25 @@ class AuthCodeVerificationControllerSecurityTest {
 
     @Test
     void test_verify_authorization_without_token_is_permitted() throws Exception {
+        when(service.verify(anyString(), anyString())).thenReturn(new AuthorizationCodeVerifyResponseDto("token"));
         AuthorizationCodeVerificationDto verificationDto = new AuthorizationCodeVerificationDto(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
         mockMvc.perform(post(URL)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(MAPPER.writeValueAsString(verificationDto)))
                 .andExpect(status().isOk());
+
+        verify(service, times(1)).verify(anyString(), anyString());
+    }
+
+    @Test
+    void test_verify_authorization_without_token_is_permitted_return_404() throws Exception {
+        AuthorizationCodeVerificationDto verificationDto = new AuthorizationCodeVerificationDto(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
+        mockMvc.perform(post(URL)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(MAPPER.writeValueAsString(verificationDto)))
+                .andExpect(status().is(404));
 
         verify(service, times(1)).verify(anyString(), anyString());
     }

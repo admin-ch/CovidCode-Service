@@ -6,6 +6,7 @@ import ch.admin.bag.covidcode.authcodegeneration.service.AuthCodeVerificationSer
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +36,9 @@ public class AuthCodeVerificationController {
         log.debug("Call of Verify with authCode '{}'.", verificationDto.getAuthorizationCode());
         AuthorizationCodeVerifyResponseDto responseDto = authCodeVerificationService.verify(verificationDto.getAuthorizationCode(), verificationDto.getFake());
         normalizeRequestTime(now);
+        if (responseDto == null) {
+            throw new ResourceNotFoundException(null);
+        }
         return responseDto;
     }
 
