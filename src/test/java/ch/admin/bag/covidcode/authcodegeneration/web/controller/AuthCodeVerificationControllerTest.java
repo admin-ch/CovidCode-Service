@@ -32,14 +32,13 @@ class AuthCodeVerificationControllerTest {
 
     @Mock
     private AuthCodeVerificationService authCodeVerificationService;
-    @InjectMocks
-    private AuthCodeVerificationController controller;
+
     private MockMvc mockMvc;
     private ObjectMapper mapper = new ObjectMapper();
 
     @BeforeEach
     void setup() {
-        this.mockMvc = standaloneSetup(controller).build();
+        this.mockMvc = standaloneSetup(new AuthCodeVerificationController(authCodeVerificationService, 0)).build();
     }
 
     @Test

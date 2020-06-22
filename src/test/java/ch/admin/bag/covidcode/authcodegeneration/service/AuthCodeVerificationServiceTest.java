@@ -30,14 +30,11 @@ class AuthCodeVerificationServiceTest {
 
     private static final String FAKE_NOT_FAKE = "0";
     private static final String FAKE_FAKE = "1";
-    private static final String MIN_SLEEP_TIME_KEY = "minSleepTime";
-    private static final String MAX_SLEEP_TIME_KEY = "maxSleepTime";
     private static final String CALL_COUNT_LIMIT_KEY = "callCountLimit";
     private static final String TEST_AUTHORIZATION_CODE = "123456789";
     private static final String TEST_ACCESS_TOKEN = "QRMwjii77";
     private static final int CODE_EXPIRATION_DELAY_IN_SECONDS = 10;
     private static final int CALL_COUNT_LIMIT = 3;
-    private static final int SLEEP_TIME = 1;
 
     @Mock
     private AuthorizationCodeRepository repository;
@@ -53,8 +50,6 @@ class AuthCodeVerificationServiceTest {
         //given
         AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now().minusDays(3), ZonedDateTime.now().plusSeconds(CODE_EXPIRATION_DELAY_IN_SECONDS));
         ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
-        ReflectionTestUtils.setField(testee, MIN_SLEEP_TIME_KEY, SLEEP_TIME);
-        ReflectionTestUtils.setField(testee, MAX_SLEEP_TIME_KEY, SLEEP_TIME);
         when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));
         when(tokenProvider.createToken(anyString(), anyString())).thenReturn(TEST_ACCESS_TOKEN);
 
@@ -75,8 +70,6 @@ class AuthCodeVerificationServiceTest {
         //given
         AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now().minusDays(3), ZonedDateTime.now().plusSeconds(CODE_EXPIRATION_DELAY_IN_SECONDS));
         ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, callCountLimit);
-        ReflectionTestUtils.setField(testee, MIN_SLEEP_TIME_KEY, SLEEP_TIME);
-        ReflectionTestUtils.setField(testee, MAX_SLEEP_TIME_KEY, SLEEP_TIME);
         when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));
         when(tokenProvider.createToken(anyString(), anyString())).thenReturn(TEST_ACCESS_TOKEN);
 
@@ -92,8 +85,6 @@ class AuthCodeVerificationServiceTest {
         //given
         AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now().minusDays(3), ZonedDateTime.now().plusSeconds(CODE_EXPIRATION_DELAY_IN_SECONDS));
         ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
-        ReflectionTestUtils.setField(testee, MIN_SLEEP_TIME_KEY, SLEEP_TIME);
-        ReflectionTestUtils.setField(testee, MAX_SLEEP_TIME_KEY, SLEEP_TIME);
         when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));
         when(tokenProvider.createToken(anyString(), anyString())).thenReturn(TEST_ACCESS_TOKEN);
 
@@ -110,8 +101,6 @@ class AuthCodeVerificationServiceTest {
         //given
         AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now().minusDays(3), ZonedDateTime.now().plusSeconds(CODE_EXPIRATION_DELAY_IN_SECONDS));
         ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
-        ReflectionTestUtils.setField(testee, MIN_SLEEP_TIME_KEY, SLEEP_TIME);
-        ReflectionTestUtils.setField(testee, MAX_SLEEP_TIME_KEY, SLEEP_TIME);
         when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));
         when(tokenProvider.createToken(anyString(), anyString())).thenReturn(TEST_ACCESS_TOKEN);
 
@@ -128,8 +117,6 @@ class AuthCodeVerificationServiceTest {
     void test_verify_call_fake_count_never_reached() {
         //given
         ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
-        ReflectionTestUtils.setField(testee, MIN_SLEEP_TIME_KEY, SLEEP_TIME);
-        ReflectionTestUtils.setField(testee, MAX_SLEEP_TIME_KEY, SLEEP_TIME);
         when(tokenProvider.createToken(anyString(), anyString())).thenReturn(TEST_ACCESS_TOKEN);
 
         //when
@@ -168,8 +155,6 @@ class AuthCodeVerificationServiceTest {
         AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now(), ZonedDateTime.now().plusDays(1));
         when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));
         ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
-        ReflectionTestUtils.setField(testee, MIN_SLEEP_TIME_KEY, SLEEP_TIME);
-        ReflectionTestUtils.setField(testee, MAX_SLEEP_TIME_KEY, SLEEP_TIME);
         when(tokenProvider.createToken(anyString(), anyString())).thenThrow(new NullPointerException());
 
         //when
