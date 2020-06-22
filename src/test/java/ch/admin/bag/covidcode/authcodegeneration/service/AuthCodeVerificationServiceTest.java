@@ -109,7 +109,7 @@ class AuthCodeVerificationServiceTest {
         testee.verify(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
         testee.verify(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
         //then
-        assertThrows(ResourceNotFoundException.class, () -> testee.verify(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE));
+        assertNull(testee.verify(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE));
     }
 
 
@@ -136,7 +136,7 @@ class AuthCodeVerificationServiceTest {
         when(repository.findByCode(anyString())).thenReturn(Optional.empty());
         //when
         //then
-        assertThrows(ResourceNotFoundException.class, () -> testee.verify(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE));
+        assertNull(testee.verify(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE));
     }
 
     @Test
@@ -146,20 +146,7 @@ class AuthCodeVerificationServiceTest {
         when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));
         //when
         //then
-        assertThrows(ResourceNotFoundException.class, () -> testee.verify(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE));
-    }
-
-    @Test
-    void test_verify_exception_token_provider() {
-        //given
-        AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now(), ZonedDateTime.now().plusDays(1));
-        when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));
-        ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
-        when(tokenProvider.createToken(anyString(), anyString())).thenThrow(new NullPointerException());
-
-        //when
-        //then
-        assertThrows(IllegalStateException.class, () -> testee.verify(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE));
+        assertNull(testee.verify(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE));
     }
 
 }

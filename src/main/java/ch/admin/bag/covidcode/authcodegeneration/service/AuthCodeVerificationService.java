@@ -6,7 +6,6 @@ import ch.admin.bag.covidcode.authcodegeneration.domain.AuthorizationCodeReposit
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,36 +29,27 @@ public class AuthCodeVerificationService {
     @Transactional
     public AuthorizationCodeVerifyResponseDto verify(String code, String fake) {
 
-        AuthorizationCode existingCode;
-
         if (FAKE_STRING.equals(fake)) {
             log.debug("Fake Call of verification !");
-            existingCode = AuthorizationCode.createFake();
-        } else {
-
-            existingCode = authorizationCodeRepository.findByCode(code).orElse(null);
-
-            if (existingCode == null) {
-                log.error("No AuthCode found with code '{}'", code);
-                throw new ResourceNotFoundException(null);
-            } else if (codeValidityHasExpired(existingCode.getExpiryDate())) {
-                log.error("AuthCode '{}' expired at {}", code, existingCode.getExpiryDate());
-                throw new ResourceNotFoundException(null);
-            } else if (existingCode.getCallCount() >= this.callCountLimit) {
-                log.error("AuthCode '{}' reached call limit {}", code, existingCode.getCallCount());
-                throw new ResourceNotFoundException(null);
-            }
-
+            return new AuthorizationCodeVerifyResponseDto(tokenProvider.createToken(AuthorizationCode.createFake().getOnsetDate().format(DATE_FORMATTER), fake));
         }
 
-        try {
-            String token = tokenProvider.createToken(existingCode.getOnsetDate().format(DATE_FORMATTER), fake);
-            existingCode.incrementCallCount();
-            return new AuthorizationCodeVerifyResponseDto(token);
-        } catch (Exception e) {
-            log.error("Error during Token Generation", e);
-            throw new IllegalStateException("Internal Error");
+        AuthorizationCode existingCode = authorizationCodeRepository.findByCode(code).orElse(null);
+
+        if (existingCode == null) {
+            log.error("No AuthCode found with code '{}'", code);
+            return null;
+        } else if (codeValidityHasExpired(existingCode.getExpiryDate())) {
+            log.error("AuthCode '{}' expired at {}", code, existingCode.getExpiryDate());
+            return null;
+        } else if (existingCode.getCallCount() >= this.callCountLimit) {
+            log.error("AuthCode '{}' reached call limit {}", code, existingCode.getCallCount());
+            return null;
         }
+
+        existingCode.incrementCallCount();
+        return new AuthorizationCodeVerifyResponseDto(tokenProvider.createToken(existingCode.getOnsetDate().format(DATE_FORMATTER), fake));
+
     }
 
     private boolean codeValidityHasExpired(ZonedDateTime expiryDate) {
