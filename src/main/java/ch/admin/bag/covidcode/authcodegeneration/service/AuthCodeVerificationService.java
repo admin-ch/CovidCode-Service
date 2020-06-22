@@ -13,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static net.logstash.logback.argument.StructuredArguments.kv;
-
 @Service
 @Transactional(readOnly = true)
 @Slf4j
@@ -32,27 +30,36 @@ public class AuthCodeVerificationService {
     @Transactional
     public AuthorizationCodeVerifyResponseDto verify(String code, String fake) {
 
+        AuthorizationCode existingCode;
+
         if (FAKE_STRING.equals(fake)) {
             log.debug("Fake Call of verification !");
-            return new AuthorizationCodeVerifyResponseDto(tokenProvider.createToken(AuthorizationCode.createFake().getOnsetDate().format(DATE_FORMATTER), fake));
+            existingCode = AuthorizationCode.createFake();
+        } else {
+
+            existingCode = authorizationCodeRepository.findByCode(code).orElse(null);
+
+            if (existingCode == null) {
+                log.error("No AuthCode found with code '{}'", code);
+                throw new ResourceNotFoundException(null);
+            } else if (codeValidityHasExpired(existingCode.getExpiryDate())) {
+                log.error("AuthCode '{}' expired at {}", code, existingCode.getExpiryDate());
+                throw new ResourceNotFoundException(null);
+            } else if (existingCode.getCallCount() >= this.callCountLimit) {
+                log.error("AuthCode '{}' reached call limit {}", code, existingCode.getCallCount());
+                throw new ResourceNotFoundException(null);
+            }
+
         }
 
-        AuthorizationCode existingCode = authorizationCodeRepository.findByCode(code).orElse(null);
-
-        if (existingCode == null) {
-            log.error("No AuthCode found with code '{}'", code);
-            throw new ResourceNotFoundException(null);
-        } else if (codeValidityHasExpired(existingCode.getExpiryDate())) {
-            log.error("AuthCode '{}' expired at {}", code, existingCode.getExpiryDate());
-            throw new ResourceNotFoundException(null);
-        } else if (existingCode.getCallCount() >= this.callCountLimit) {
-            log.error("AuthCode '{}' reached call limit {}", code, existingCode.getCallCount());
-            throw new ResourceNotFoundException(null);
+        try {
+            String token = tokenProvider.createToken(existingCode.getOnsetDate().format(DATE_FORMATTER), fake);
+            existingCode.incrementCallCount();
+            return new AuthorizationCodeVerifyResponseDto(token);
+        } catch (Exception e) {
+            log.error("Error during Token Generation", e);
+            throw new IllegalStateException("Internal Error");
         }
-
-        existingCode.incrementCallCount();
-        log.info("AuthorizationCode verified: {}, {}", kv("id", existingCode.getId()), kv("callCount", existingCode.getCallCount()));
-        return new AuthorizationCodeVerifyResponseDto(tokenProvider.createToken(existingCode.getOnsetDate().format(DATE_FORMATTER), fake));
     }
 
     private boolean codeValidityHasExpired(ZonedDateTime expiryDate) {
