@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ch.admin.bag.covidcode</groupId>
 	<artifactId>ha-authcode-generation-service</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.3-SNAPSHOT</version>
 	<name>ha-authcode-generation-service</name>
 	<description>Service for generating an authorization code for the proximity tracing app</description>
 
@@ -23,6 +23,7 @@
 
 		<springdoc.version>1.3.6</springdoc.version>
 		<jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
+		<reproducible-build-maven-plugin.version>0.12</reproducible-build-maven-plugin.version>
 
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 
@@ -239,6 +240,63 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>${maven-failsafe-plugin.version}</version>
             </plugin>
+
+			<plugin>
+				<groupId>io.github.zlika</groupId>
+				<artifactId>reproducible-build-maven-plugin</artifactId>
+				<version>${reproducible-build-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>strip-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>strip-jar</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>strip-archive</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>strip-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>retrieve-git-info</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<injectAllReactorProjects>true</injectAllReactorProjects>
+					<runOnlyOnce>true</runOnlyOnce>
+					<skipPoms>false</skipPoms>
+					<dateFormat>yyyyMMddHHmmss</dateFormat>
+					<dateFormatTimeZone>UTC</dateFormatTimeZone>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Last-Commit-Id>${git.commit.id}</Last-Commit-Id>
+							<Last-Commit-Time>${git.commit.time}</Last-Commit-Time>
+							<Reproducible-Build>true</Reproducible-Build>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
