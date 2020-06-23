@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @Service
 @Transactional(readOnly = true)
 @Slf4j
@@ -48,6 +50,7 @@ public class AuthCodeVerificationService {
         }
 
         existingCode.incrementCallCount();
+        log.debug("AuthorizationCode verified: '{}', '{}'", kv("id", existingCode.getId()), kv("callCount", existingCode.getCallCount()));
         return new AuthorizationCodeVerifyResponseDto(tokenProvider.createToken(existingCode.getOnsetDate().format(DATE_FORMATTER), fake));
 
     }
