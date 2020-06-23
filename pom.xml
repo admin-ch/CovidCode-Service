@@ -309,25 +309,6 @@
 					</archive>
 				</configuration>
 			</plugin>
-
-			<plugin>
-				<groupId>io.github.zlika</groupId>
-				<artifactId>reproducible-build-maven-plugin</artifactId>
-				<version>${reproducible-build-maven-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>strip-jar</id>
-						<goals>
-							<goal>strip-jar</goal>
-						</goals>
-						<configuration>
-							<zipDateTime>${git.commit.time}</zipDateTime>
-							<!-- Set custom date/time format pattern, "yyyyMMddHHmmss" by default -->
-							<!-- <zipDateTimeFormatPattern>yyyyMMddHHmmss</zipDateTimeFormatPattern> -->
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
