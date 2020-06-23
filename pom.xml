@@ -259,6 +259,9 @@
 						<goals>
 							<goal>strip-jar</goal>
 						</goals>
+						<configuration>
+							<zipDateTime>${git.commit.time}</zipDateTime>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
