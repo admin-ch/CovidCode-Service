@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ch.admin.bag.covidcode</groupId>
 	<artifactId>ha-authcode-generation-service</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.3-SNAPSHOT</version>
 	<name>ha-authcode-generation-service</name>
 	<description>Service for generating an authorization code for the proximity tracing app</description>
 
@@ -241,18 +241,6 @@
                 <version>${maven-failsafe-plugin.version}</version>
             </plugin>
 
-			<plugin>
-				<groupId>io.github.zlika</groupId>
-				<artifactId>reproducible-build-maven-plugin</artifactId>
-				<version>${reproducible-build-maven-plugin.version}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>strip-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>io.github.zlika</groupId>
 				<artifactId>reproducible-build-maven-plugin</artifactId>
