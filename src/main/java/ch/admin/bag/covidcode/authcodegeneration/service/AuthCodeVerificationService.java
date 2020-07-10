@@ -50,7 +50,7 @@ public class AuthCodeVerificationService {
         }
 
         existingCode.incrementCallCount();
-        log.info("AuthorizationCode verified: '{}', '{}'", kv("id", existingCode.getId()), kv("callCount", existingCode.getCallCount()));
+        log.info("AuthorizationCode verified: '{}', '{}', '{}', '{}'", kv("id", existingCode.getId()), kv("callCount", existingCode.getCallCount()), kv("creationDateTime", existingCode.getCreationDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)), kv("onsetDate",existingCode.getOnsetDate()));
         return new AuthorizationCodeVerifyResponseDto(tokenProvider.createToken(existingCode.getOnsetDate().format(DATE_FORMATTER), fake));
 
     }
