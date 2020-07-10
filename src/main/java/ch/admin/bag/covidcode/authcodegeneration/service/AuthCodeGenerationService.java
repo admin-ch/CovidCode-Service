@@ -47,8 +47,7 @@ public class AuthCodeGenerationService {
 
         AuthorizationCode authorizationCode = new AuthorizationCode(authCode, createDto.getOnsetDate(), createDto.getOnsetDate().minusDays(onsetSubtractionDays), ZonedDateTime.now().plusMinutes(codeExpirationDelay));
         authorizationCodeRepository.saveAndFlush(authorizationCode);
-        log.info("New authorizationCode saved with id '{}'.", authorizationCode.getId());
-        log.debug("New authorizationCode saved: {}, {}, {}.", kv("id", authorizationCode.getId()), kv("creationDateTime", authorizationCode.getCreationDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)), kv("onsetDate",authorizationCode.getOnsetDate()));
+        log.info("New authorizationCode saved: {}, {}, {}.", kv("id", authorizationCode.getId()), kv("creationDateTime", authorizationCode.getCreationDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)), kv("onsetDate",authorizationCode.getOnsetDate()));
         return new AuthorizationCodeResponseDto(authorizationCode.getCode());
     }
 
