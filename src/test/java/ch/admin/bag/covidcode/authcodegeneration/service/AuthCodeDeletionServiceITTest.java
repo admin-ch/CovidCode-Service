@@ -20,7 +20,8 @@ import static org.hamcrest.core.Is.is;
         "spring.datasource.driver-class-name=org.h2.Driver",
         "spring.datasource.url=jdbc:h2:~/test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE",
         "spring.datasource.username=sa",
-        "spring.datasource.password=sa"
+        "spring.datasource.password=sa",
+        "CF_INSTANCE_INDEX=0"
 })
 @ActiveProfiles("local")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)

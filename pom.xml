@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ch.admin.bag.covidcode</groupId>
 	<artifactId>ha-authcode-generation-service</artifactId>
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.0.5-SNAPSHOT</version>
 	<name>ha-authcode-generation-service</name>
 	<description>Service for generating an authorization code for the proximity tracing app</description>
 
