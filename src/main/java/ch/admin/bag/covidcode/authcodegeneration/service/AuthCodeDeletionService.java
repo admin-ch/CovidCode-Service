@@ -35,7 +35,7 @@ public class AuthCodeDeletionService {
         expiredAuthCodes.forEach(ac -> {
 
             if (ac.getCallCount() > 0) {
-                log.info("AuthorizationCode verified: '{}', '{}', '{}', '{}', '{}'", kv("id", ac.getId()), kv("callCount", ac.getCallCount()), kv("creationDateTime", ac.getCreationDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)), kv("onsetDate",ac.getOnsetDate()), kv("originalOnsetDate",ac.getOriginalOnsetDate()));
+                log.info("AuthorizationCode verified: '{}', '{}', '{}', '{}', '{}'", kv("id", ac.getId()), kv("callCount", ac.getCallCount()), kv("creationDateTime", ac.getCreationDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)), kv("onsetDate",ac.getOnsetDate().format(DateTimeFormatter.ISO_LOCAL_DATE)), kv("originalOnsetDate",ac.getOriginalOnsetDate().format(DateTimeFormatter.ISO_LOCAL_DATE)));
             }
 
             log.info("Deleting code '{}' with expiryDate '{}'.", ac.getCode(), ac.getExpiryDate());
