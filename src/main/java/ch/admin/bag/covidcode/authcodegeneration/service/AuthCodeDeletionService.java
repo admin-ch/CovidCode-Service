@@ -4,6 +4,7 @@ import ch.admin.bag.covidcode.authcodegeneration.domain.AuthorizationCode;
 import ch.admin.bag.covidcode.authcodegeneration.domain.AuthorizationCodeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,13 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-@ConditionalOnProperty(value="CF_INSTANCE_INDEX", havingValue = "0")
+@ConditionalOnProperty(value = "CF_INSTANCE_INDEX", havingValue = "0")
 public class AuthCodeDeletionService {
 
     private final AuthorizationCodeRepository authorizationCodeRepository;
+
+    @Value("${authcodegeneration.service.sleepLogInterval}")
+    private int sleepLogInterval;
 
     @Transactional
     @Scheduled(cron = "${authcodegeneration.service.deletionCron}")
@@ -34,11 +38,22 @@ public class AuthCodeDeletionService {
 
         expiredAuthCodes.forEach(ac -> {
 
-            if (ac.getCallCount() > 0) {
-                log.info("AuthorizationCode verified: '{}', '{}', '{}', '{}', '{}'", kv("id", ac.getId()), kv("callCount", ac.getCallCount()), kv("creationDateTime", ac.getCreationDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)), kv("onsetDate",ac.getOnsetDate().format(DateTimeFormatter.ISO_LOCAL_DATE)), kv("originalOnsetDate",ac.getOriginalOnsetDate().format(DateTimeFormatter.ISO_LOCAL_DATE)));
+            try {
+                Thread.sleep(sleepLogInterval);
+            } catch (InterruptedException e) {
+                log.error("Exception during sleep", e);
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException(e);
             }
 
-            log.info("Deleting code '{}' with expiryDate '{}'.", ac.getCode(), ac.getExpiryDate());
+            log.info("AuthorizationCode-Statistic '{}', '{}', '{}', '{}', '{}', '{}'",
+                    kv("id", ac.getId()),
+                    kv("callCount", ac.getCallCount()),
+                    kv("creationDateTime", ac.getCreationDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)),
+                    kv("onsetDate", ac.getOnsetDate().format(DateTimeFormatter.ISO_LOCAL_DATE)),
+                    kv("originalOnsetDate", ac.getOriginalOnsetDate().format(DateTimeFormatter.ISO_LOCAL_DATE)),
+                    kv("expiryDate", ac.getExpiryDate().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
+
             authorizationCodeRepository.delete(ac);
         });
 
