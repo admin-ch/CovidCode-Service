@@ -11,6 +11,8 @@ authcodegeneration:
     prometheus:
       user: "prometheus"
       password: "{noop}secret"
+  service:
+    sleepLogInterval: 1
 
 jeap:
   security:

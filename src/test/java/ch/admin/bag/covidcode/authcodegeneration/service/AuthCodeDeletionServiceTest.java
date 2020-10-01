@@ -7,7 +7,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("local")
 class AuthCodeDeletionServiceTest {
 
     @Mock
@@ -28,8 +31,8 @@ class AuthCodeDeletionServiceTest {
     void deleteOldAuthCode_foundTwo_deleteTwo() {
         //given
         List<AuthorizationCode> codes = new ArrayList<>();
-        codes.add(mock(AuthorizationCode.class));
-        codes.add(mock(AuthorizationCode.class));
+        codes.add(createAuthorizationCode());
+        codes.add(createAuthorizationCode());
         when(repository.findByExpiryDateBefore(any(ZonedDateTime.class))).thenReturn(codes);
 
         //when
@@ -37,6 +40,15 @@ class AuthCodeDeletionServiceTest {
 
         //then
         verify(repository, times(2)).delete(any(AuthorizationCode.class));
+    }
+
+    private AuthorizationCode createAuthorizationCode() {
+        AuthorizationCode authorizationCode = mock(AuthorizationCode.class);
+        when(authorizationCode.getCreationDateTime()).thenReturn(ZonedDateTime.now());
+        when(authorizationCode.getExpiryDate()).thenReturn(ZonedDateTime.now());
+        when(authorizationCode.getOnsetDate()).thenReturn(LocalDate.now());
+        when(authorizationCode.getOriginalOnsetDate()).thenReturn(LocalDate.now());
+        return authorizationCode;
     }
 
     @Test
