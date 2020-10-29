@@ -2,17 +2,19 @@ package ch.admin.bag.covidcode.authcodegeneration.web.controller;
 
 import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeCreateDto;
 import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeResponseDto;
+import ch.admin.bag.covidcode.authcodegeneration.config.security.authentication.JeapAuthenticationToken;
+import ch.admin.bag.covidcode.authcodegeneration.config.security.authentication.ServletJeapAuthorization;
 import ch.admin.bag.covidcode.authcodegeneration.service.AuthCodeGenerationService;
 import ch.admin.bag.covidcode.authcodegeneration.testutil.LocalDateSerializer;
 import ch.admin.bag.covidcode.authcodegeneration.testutil.LoggerTestUtil;
-import ch.admin.bag.covidcode.authcodegeneration.config.security.authentication.JeapAuthenticationToken;
-import ch.admin.bag.covidcode.authcodegeneration.config.security.authentication.ServletJeapAuthorization;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.assertj.core.groups.Tuple;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -129,5 +132,27 @@ class AuthCodeGenerationControllerTest {
                 .header("Authorization", DUMMY_STR)
                 .content(mapper.writeValueAsString(createDto)))
                 .andExpect(status().is(400));
+    }
+
+    @Test
+    void test_create_hin_access_denied() throws JsonProcessingException {
+        //given
+        Jwt jwt = Jwt.withTokenValue(DUMMY_STR).header(DUMMY_STR, null).claim("homeName", "E-ID CH-LOGIN").claim("unitName", "HIN").build();
+        AuthorizationCodeCreateDto createDto = new AuthorizationCodeCreateDto(LocalDate.now().plusDays(1));
+        when(jeapAuthorization.getJeapAuthenticationToken()).thenReturn(new JeapAuthenticationToken(jwt, Collections.emptySet()));
+
+        final String request = mapper.writeValueAsString(createDto);
+
+        //when
+        try {
+            mockMvc.perform(post(URL)
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("Authorization", DUMMY_STR)
+                    .content(request));
+            Assert.fail();
+        } catch (Exception e) {
+            Assert.assertTrue(e.getCause() instanceof AccessDeniedException);
+        }
     }
 }
