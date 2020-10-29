@@ -2,12 +2,13 @@ package ch.admin.bag.covidcode.authcodegeneration.web.controller;
 
 import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeCreateDto;
 import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeResponseDto;
-import ch.admin.bag.covidcode.authcodegeneration.service.AuthCodeGenerationService;
 import ch.admin.bag.covidcode.authcodegeneration.config.security.authentication.JeapAuthenticationToken;
 import ch.admin.bag.covidcode.authcodegeneration.config.security.authentication.ServletJeapAuthorization;
+import ch.admin.bag.covidcode.authcodegeneration.service.AuthCodeGenerationService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,6 +50,10 @@ public class AuthCodeGenerationController {
 
         if (displayName == null) {
             displayName = jeapAuthenticationToken.getTokenName();
+        }
+
+        if ("E-ID CH-LOGIN".equals(jeapAuthenticationToken.getToken().getClaimAsString("homeName")) && jeapAuthenticationToken.getToken().getClaimAsString("unitName").startsWith("HIN")) {
+            throw new AccessDeniedException("Access denied for HIN with CH-Login");
         }
 
         log.info("Authenticated User is '{}'.", displayName);
