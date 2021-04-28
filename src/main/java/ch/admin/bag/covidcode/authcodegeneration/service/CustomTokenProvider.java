@@ -21,49 +21,64 @@ import java.util.UUID;
 @Slf4j
 public class CustomTokenProvider {
 
-    @Value("${authcodegeneration.jwt.token-validity}")
-    private long tokenValidity;
+  @Value("${authcodegeneration.jwt.token-validity}")
+  private long tokenValidity;
 
-    @Value("${authcodegeneration.jwt.issuer}")
-    private String issuer;
+  @Value("${authcodegeneration.jwt.issuer}")
+  private String issuer;
 
-    @Value("${authcodegeneration.jwt.privateKey}")
-    private String privateKey;
+  @Value("${authcodegeneration.jwt.privateKey}")
+  private String privateKey;
 
-    private KeyFactory rsa;
+  private KeyFactory rsa;
 
-    @PostConstruct
-    public void init() throws NoSuchAlgorithmException {
-        rsa = KeyFactory.getInstance("RSA");
+  @PostConstruct
+  public void init() throws NoSuchAlgorithmException {
+    rsa = KeyFactory.getInstance("RSA");
+  }
+
+  public String createToken(String onsetDate, String fake) {
+    return createToken(onsetDate, fake, false);
+  }
+
+  public String createToken(String onsetDate, String fake, boolean isNotifyMeToken) {
+    final long nowMillis = System.currentTimeMillis();
+    final Date now = new Date(nowMillis);
+
+    final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(Decoders.BASE64.decode(privateKey));
+    final Key signingKey;
+
+    try {
+      signingKey = rsa.generatePrivate(spec);
+    } catch (InvalidKeySpecException e) {
+      log.error("Error during generate private key", e);
+      throw new IllegalStateException(e);
     }
 
-    public String createToken(String onsetDate, String fake) {
-        final long nowMillis = System.currentTimeMillis();
-        final Date now = new Date(nowMillis);
-
-        final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(Decoders.BASE64.decode(privateKey));
-        final Key signingKey;
-
-        try {
-            signingKey = rsa.generatePrivate(spec);
-        } catch (InvalidKeySpecException e) {
-            log.error("Error during generate private key", e);
-            throw new IllegalStateException(e);
-        }
-
-        final JwtBuilder builder = Jwts.builder()
-                .setId(UUID.randomUUID().toString())
-                .setIssuer(issuer)
-                .setIssuedAt(now)
-                .setNotBefore(now)
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .claim("scope", "exposed")
-                .claim("fake", fake)
-                .claim("onset", onsetDate)
-                .signWith(signingKey);
-
-        builder.setExpiration(new Date(nowMillis + tokenValidity));
-        return builder.compact();
+    String audience;
+    String scope;
+    if (isNotifyMeToken) {
+      audience = "notifyMe";
+      scope = "tracekey";
+    } else {
+      audience = "swissCovid";
+      scope = "exposed";
     }
 
+    final JwtBuilder builder =
+        Jwts.builder()
+            .setId(UUID.randomUUID().toString())
+            .setIssuer(issuer)
+            .setIssuedAt(now)
+            .setNotBefore(now)
+            .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+            .claim("aud", audience)
+            .claim("scope", scope)
+            .claim("fake", fake)
+            .claim("onset", onsetDate)
+            .signWith(signingKey);
+
+    builder.setExpiration(new Date(nowMillis + tokenValidity));
+    return builder.compact();
+  }
 }
