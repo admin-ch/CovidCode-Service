@@ -1,7 +1,7 @@
 package ch.admin.bag.covidcode.authcodegeneration.api;
 
 public enum TokenType {
-    SWISSCOVID_TOKEN("swissCovid", "exposed"), NOTIFYME_TOKEN("notifyMe", "tracekey");
+    SWISSCOVID_TOKEN("swissCovid", "exposed"), NOTIFYME_TOKEN("notifyMe", "userupload");
 
     private final String scope;
     private final String audience;
