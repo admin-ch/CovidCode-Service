@@ -1,6 +1,8 @@
 package ch.admin.bag.covidcode.authcodegeneration.service;
 
 import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeVerifyResponseDto;
+import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeVerifyResponseDtoWrapper;
+import ch.admin.bag.covidcode.authcodegeneration.api.TokenType;
 import ch.admin.bag.covidcode.authcodegeneration.domain.AuthorizationCode;
 import ch.admin.bag.covidcode.authcodegeneration.domain.AuthorizationCodeRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ch.admin.bag.covidcode.authcodegeneration.api.TokenType.NOTIFYME_TOKEN;
+import static ch.admin.bag.covidcode.authcodegeneration.api.TokenType.SWISSCOVID_TOKEN;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Service
@@ -32,56 +36,51 @@ public class AuthCodeVerificationService {
 
   @Transactional
   public AuthorizationCodeVerifyResponseDto verify(String code, String fake) {
-    final var dtos = verify(code, fake, false);
-    if (dtos != null) {
-      return dtos.get(0);
-    } else {
-      return null;
-    }
+    final var accessTokens = verify(code, fake, false);
+    return accessTokens.getSwissCovidAccessToken();
   }
 
   /**
-   * @param code
-   * @param fake
+   * @param code Authorization code as provided by the health authority
+   * @param fake String to request fake token
    * @param needNotifyMeToken Needs a second token for purple (notifyMe) backend
-   * @return a list containing one or two tokens, depending on needNotifyMeToken param
+   * @return a wrapper containing two access tokens, which are null if authCode is invalid
    */
   @Transactional
-  public List<AuthorizationCodeVerifyResponseDto> verify(
+  public AuthorizationCodeVerifyResponseDtoWrapper verify(
       String code, String fake, boolean needNotifyMeToken) {
-    final var tokenList = new ArrayList<AuthorizationCodeVerifyResponseDto>();
+    final var accessTokens = new AuthorizationCodeVerifyResponseDtoWrapper();
     if (FAKE_STRING.equals(fake)) {
-      log.debug("Fake Call of verification !");
       final var swissCovidToken =
           new AuthorizationCodeVerifyResponseDto(
               tokenProvider.createToken(
                   AuthorizationCode.createFake().getOnsetDate().format(DATE_FORMATTER),
-                  fake,
-                  false));
-      tokenList.add(swissCovidToken);
+                  FAKE_STRING,
+                  SWISSCOVID_TOKEN));
+      accessTokens.setSwissCovidAccessToken(swissCovidToken);
       if (needNotifyMeToken) {
         final var notifyMeToken =
             new AuthorizationCodeVerifyResponseDto(
                 tokenProvider.createToken(
                     AuthorizationCode.createFake().getOnsetDate().format(DATE_FORMATTER),
-                    fake,
-                    true));
-        tokenList.add(notifyMeToken);
+                    FAKE_STRING,
+                    NOTIFYME_TOKEN));
+        accessTokens.setNotifyMeAccessToken(notifyMeToken);
       }
-      return tokenList;
+      return accessTokens;
     }
 
     AuthorizationCode existingCode = authorizationCodeRepository.findByCode(code).orElse(null);
 
     if (existingCode == null) {
       log.error("No AuthCode found with code '{}'", code);
-      return null;
+      return accessTokens;
     } else if (codeValidityHasExpired(existingCode.getExpiryDate())) {
       log.error("AuthCode '{}' expired at {}", code, existingCode.getExpiryDate());
-      return null;
+      return accessTokens;
     } else if (existingCode.getCallCount() >= this.callCountLimit) {
       log.error("AuthCode '{}' reached call limit {}", code, existingCode.getCallCount());
-      return null;
+      return accessTokens;
     }
 
     existingCode.incrementCallCount();
@@ -99,16 +98,16 @@ public class AuthCodeVerificationService {
     final var swissCovidToken =
         new AuthorizationCodeVerifyResponseDto(
             tokenProvider.createToken(
-                existingCode.getOnsetDate().format(DATE_FORMATTER), fake, false));
-    tokenList.add(swissCovidToken);
+                existingCode.getOnsetDate().format(DATE_FORMATTER), fake, SWISSCOVID_TOKEN));
+    accessTokens.setSwissCovidAccessToken(swissCovidToken);
     if (needNotifyMeToken) {
       final var notifyMeToken =
           new AuthorizationCodeVerifyResponseDto(
               tokenProvider.createToken(
-                  existingCode.getOnsetDate().format(DATE_FORMATTER), fake, true));
-      tokenList.add(notifyMeToken);
+                  existingCode.getOnsetDate().format(DATE_FORMATTER), fake, NOTIFYME_TOKEN));
+      accessTokens.setNotifyMeAccessToken(notifyMeToken);
     }
-    return tokenList;
+    return accessTokens;
   }
 
   private boolean codeValidityHasExpired(ZonedDateTime expiryDate) {

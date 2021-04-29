@@ -1,7 +1,7 @@
 package ch.admin.bag.covidcode.authcodegeneration.service;
 
+import ch.admin.bag.covidcode.authcodegeneration.api.TokenType;
 import io.jsonwebtoken.Header;
-import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +16,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Date;
 import java.util.UUID;
+
+import static ch.admin.bag.covidcode.authcodegeneration.api.TokenType.SWISSCOVID_TOKEN;
 
 @Component
 @Slf4j
@@ -38,10 +40,10 @@ public class CustomTokenProvider {
   }
 
   public String createToken(String onsetDate, String fake) {
-    return createToken(onsetDate, fake, false);
+    return createToken(onsetDate, fake, SWISSCOVID_TOKEN);
   }
 
-  public String createToken(String onsetDate, String fake, boolean isNotifyMeToken) {
+  public String createToken(String onsetDate, String fake, TokenType tokenType) {
     final long nowMillis = System.currentTimeMillis();
     final Date now = new Date(nowMillis);
 
@@ -55,30 +57,18 @@ public class CustomTokenProvider {
       throw new IllegalStateException(e);
     }
 
-    String audience;
-    String scope;
-    if (isNotifyMeToken) {
-      audience = "notifyMe";
-      scope = "tracekey";
-    } else {
-      audience = "swissCovid";
-      scope = "exposed";
-    }
-
-    final JwtBuilder builder =
-        Jwts.builder()
-            .setId(UUID.randomUUID().toString())
-            .setIssuer(issuer)
-            .setIssuedAt(now)
-            .setNotBefore(now)
-            .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-            .claim("aud", audience)
-            .claim("scope", scope)
-            .claim("fake", fake)
-            .claim("onset", onsetDate)
-            .signWith(signingKey);
-
-    builder.setExpiration(new Date(nowMillis + tokenValidity));
-    return builder.compact();
+    return Jwts.builder()
+        .setId(UUID.randomUUID().toString())
+        .setIssuer(issuer)
+        .setIssuedAt(now)
+        .setNotBefore(now)
+        .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+        .claim("aud", tokenType.getAudience())
+        .claim("scope", tokenType.getScope())
+        .claim("fake", fake)
+        .claim("onset", onsetDate)
+        .signWith(signingKey)
+        .setExpiration(new Date(nowMillis + tokenValidity))
+        .compact();
   }
 }

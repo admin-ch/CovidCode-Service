@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcode.authcodegeneration.service;
 
 import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeVerifyResponseDto;
+import ch.admin.bag.covidcode.authcodegeneration.api.TokenType;
 import ch.admin.bag.covidcode.authcodegeneration.domain.AuthorizationCode;
 import ch.admin.bag.covidcode.authcodegeneration.domain.AuthorizationCodeRepository;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Optional;
 
+import static ch.admin.bag.covidcode.authcodegeneration.api.TokenType.SWISSCOVID_TOKEN;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
@@ -50,7 +52,7 @@ class AuthCodeVerificationServiceTest {
         AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now().minusDays(3), ZonedDateTime.now().plusSeconds(CODE_EXPIRATION_DELAY_IN_SECONDS));
         ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
         when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));
-        when(tokenProvider.createToken(anyString(), anyString(), anyBoolean())).thenReturn(TEST_ACCESS_TOKEN);
+        when(tokenProvider.createToken(anyString(), anyString(), any())).thenReturn(TEST_ACCESS_TOKEN);
 
 
         //when
@@ -71,7 +73,7 @@ class AuthCodeVerificationServiceTest {
         AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now().minusDays(3), ZonedDateTime.now().plusSeconds(CODE_EXPIRATION_DELAY_IN_SECONDS));
         ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, callCountLimit);
         when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));
-        when(tokenProvider.createToken(anyString(), anyString(), anyBoolean())).thenReturn(TEST_ACCESS_TOKEN);
+        when(tokenProvider.createToken(anyString(), anyString(), any())).thenReturn(TEST_ACCESS_TOKEN);
 
         //when
         AuthorizationCodeVerifyResponseDto responseDto = testee.verify(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
@@ -86,13 +88,13 @@ class AuthCodeVerificationServiceTest {
         AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now().minusDays(3), ZonedDateTime.now().plusSeconds(CODE_EXPIRATION_DELAY_IN_SECONDS));
         ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
         when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));
-        when(tokenProvider.createToken(anyString(), anyString(), anyBoolean())).thenReturn(TEST_ACCESS_TOKEN);
+        when(tokenProvider.createToken(anyString(), anyString(), any())).thenReturn(TEST_ACCESS_TOKEN);
 
 
         //when
         AuthorizationCodeVerifyResponseDto responseDto = testee.verify(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
         //then
-        verify(tokenProvider).createToken(eq(LocalDate.now().minusDays(3).toString()), anyString(), eq(false));
+        verify(tokenProvider).createToken(eq(LocalDate.now().minusDays(3).toString()), anyString(), eq(SWISSCOVID_TOKEN));
         assertNotNull(responseDto.getAccessToken());
         assertEquals(TEST_ACCESS_TOKEN, responseDto.getAccessToken());
     }
@@ -103,7 +105,7 @@ class AuthCodeVerificationServiceTest {
         AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), LocalDate.now().minusDays(3), ZonedDateTime.now().plusSeconds(CODE_EXPIRATION_DELAY_IN_SECONDS));
         ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
         when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));
-        when(tokenProvider.createToken(anyString(), anyString(), anyBoolean())).thenReturn(TEST_ACCESS_TOKEN);
+        when(tokenProvider.createToken(anyString(), anyString(), any())).thenReturn(TEST_ACCESS_TOKEN);
 
 
         //when
@@ -119,7 +121,7 @@ class AuthCodeVerificationServiceTest {
     void test_verify_call_fake_count_never_reached() {
         //given
         ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, CALL_COUNT_LIMIT);
-        when(tokenProvider.createToken(anyString(), anyString(), anyBoolean())).thenReturn(TEST_ACCESS_TOKEN);
+        when(tokenProvider.createToken(anyString(), anyString(), any())).thenReturn(TEST_ACCESS_TOKEN);
 
 
         //when

@@ -34,13 +34,12 @@ public class AuthCodeVerificationControllerV2 {
     public ResponseEntity<AuthorizationCodeVerifyResponseDtoWrapper> verify(@Valid @RequestBody AuthorizationCodeVerificationDto verificationDto) {
         var now = Instant.now().toEpochMilli();
         log.debug("Call of Verify with authCode '{}'.", verificationDto.getAuthorizationCode());
-        final List<AuthorizationCodeVerifyResponseDto> responseDto = authCodeVerificationService.verify(verificationDto.getAuthorizationCode(), verificationDto.getFake(), true);
+        final AuthorizationCodeVerifyResponseDtoWrapper accessTokenWrapper = authCodeVerificationService.verify(verificationDto.getAuthorizationCode(), verificationDto.getFake(), true);
         normalizeRequestTime(now);
-        if (responseDto == null) {
+        if (accessTokenWrapper.getSwissCovidAccessToken() == null || accessTokenWrapper.getNotifyMeAccessToken() == null) {
             throw new ResourceNotFoundException(null);
         }
-        final var wrapper = new AuthorizationCodeVerifyResponseDtoWrapper(responseDto);
-        return ResponseEntity.ok().body(wrapper);
+        return ResponseEntity.ok().body(accessTokenWrapper);
     }
 
     private void normalizeRequestTime(long now) {

@@ -10,17 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
@@ -52,10 +48,10 @@ class AuthCodeVerificationControllerV2Test {
     void test_verify() throws Exception {
         //given
         AuthorizationCodeVerificationDto verificationDto = new AuthorizationCodeVerificationDto(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
-        AuthorizationCodeVerifyResponseDto fooResponseDto = new AuthorizationCodeVerifyResponseDto(DUMMY_FOO);
-        AuthorizationCodeVerifyResponseDto barResponseDto = new AuthorizationCodeVerifyResponseDto(DUMMY_BAR);
-        final var responseDtos = Arrays.asList(fooResponseDto, barResponseDto);
-        when(authCodeVerificationService.verify(anyString(), anyString(), anyBoolean())).thenReturn(responseDtos);
+        AuthorizationCodeVerifyResponseDto swissCovidResponseDto = new AuthorizationCodeVerifyResponseDto(DUMMY_FOO);
+        AuthorizationCodeVerifyResponseDto notifyMeResponseDto = new AuthorizationCodeVerifyResponseDto(DUMMY_BAR);
+        final var expectedWrapper = new AuthorizationCodeVerifyResponseDtoWrapper(swissCovidResponseDto, notifyMeResponseDto);
+        when(authCodeVerificationService.verify(anyString(), anyString(), anyBoolean())).thenReturn(expectedWrapper);
 
         //when
         MvcResult result = mockMvc.perform(post(URL)
@@ -67,13 +63,13 @@ class AuthCodeVerificationControllerV2Test {
                 .andReturn();
 
         //then
-        final var wrapper = mapper.readValue(result.getResponse().getContentAsString(), AuthorizationCodeVerifyResponseDtoWrapper.class);
-        final var expectedDtoList = wrapper.getResponseDtoList();
-        assertEquals(2, expectedDtoList.size(), "Should return exactly two tokens for swissCovid and notifyMe backend");
-        final var dummies = Arrays.asList(DUMMY_FOO, DUMMY_BAR);
-        expectedDtoList.forEach(expectedDto -> {
-            assertTrue(dummies.contains(expectedDto.getAccessToken()));
-        });
+        final var actualWrapper = mapper.readValue(result.getResponse().getContentAsString(), AuthorizationCodeVerifyResponseDtoWrapper.class);
+        final var swissCovidAccessToken = actualWrapper.getSwissCovidAccessToken();
+        final var notifyMeAccessToken = actualWrapper.getNotifyMeAccessToken();
+        assertNotNull(swissCovidAccessToken, "Should return exactly two tokens for swissCovid and notifyMe backend");
+        assertNotNull(notifyMeAccessToken, "Should return exactly two tokens for swissCovid and notifyMe backend");
+        assertEquals(DUMMY_FOO, swissCovidAccessToken.getAccessToken());
+        assertEquals(DUMMY_BAR, notifyMeAccessToken.getAccessToken());
     }
 
     @Test
@@ -81,7 +77,7 @@ class AuthCodeVerificationControllerV2Test {
         //given
         AuthorizationCodeVerificationDto verificationDto = new AuthorizationCodeVerificationDto(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
 
-        lenient().when(authCodeVerificationService.verify(anyString(), anyString(), anyBoolean())).thenReturn(null);
+        lenient().when(authCodeVerificationService.verify(anyString(), anyString(), anyBoolean())).thenReturn(new AuthorizationCodeVerifyResponseDtoWrapper());
 
         //when
         mockMvc.perform(post(URL)

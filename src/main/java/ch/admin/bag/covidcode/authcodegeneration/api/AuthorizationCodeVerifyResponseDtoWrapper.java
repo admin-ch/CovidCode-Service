@@ -5,22 +5,30 @@ import java.util.List;
 
 public class AuthorizationCodeVerifyResponseDtoWrapper {
 
-  private List<AuthorizationCodeVerifyResponseDto> responseDtoList;
+  private AuthorizationCodeVerifyResponseDto swissCovidAccessToken;
+  private AuthorizationCodeVerifyResponseDto notifyMeAccessToken;
 
-  public AuthorizationCodeVerifyResponseDtoWrapper(
-      List<AuthorizationCodeVerifyResponseDto> responseDtoList) {
-    this.responseDtoList = new ArrayList<>(responseDtoList);
+  public AuthorizationCodeVerifyResponseDtoWrapper(AuthorizationCodeVerifyResponseDto swissCovidAccessToken, AuthorizationCodeVerifyResponseDto notifyMeAccessToken) {
+    this.swissCovidAccessToken = swissCovidAccessToken;
+    this.notifyMeAccessToken = notifyMeAccessToken;
   }
 
-  public AuthorizationCodeVerifyResponseDtoWrapper() {
-    responseDtoList = new ArrayList<>();
+  public AuthorizationCodeVerifyResponseDtoWrapper() {}
+
+
+  public AuthorizationCodeVerifyResponseDto getSwissCovidAccessToken() {
+    return swissCovidAccessToken;
   }
 
-  public List<AuthorizationCodeVerifyResponseDto> getResponseDtoList() {
-    return new ArrayList<>(responseDtoList);
+  public void setSwissCovidAccessToken(AuthorizationCodeVerifyResponseDto swissCovidAccessToken) {
+    this.swissCovidAccessToken = swissCovidAccessToken;
   }
 
-  public void setResponseDtoList(List<AuthorizationCodeVerifyResponseDto> responseDtoList) {
-    this.responseDtoList = responseDtoList;
+  public AuthorizationCodeVerifyResponseDto getNotifyMeAccessToken() {
+    return notifyMeAccessToken;
+  }
+
+  public void setNotifyMeAccessToken(AuthorizationCodeVerifyResponseDto notifyMeAccessToken) {
+    this.notifyMeAccessToken = notifyMeAccessToken;
   }
 }
