@@ -20,7 +20,7 @@ import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Optional;
 
-import static ch.admin.bag.covidcode.authcodegeneration.api.TokenType.SWISSCOVID_TOKEN;
+import static ch.admin.bag.covidcode.authcodegeneration.api.TokenType.DP3T_TOKEN;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
@@ -94,7 +94,7 @@ class AuthCodeVerificationServiceTest {
         //when
         AuthorizationCodeVerifyResponseDto responseDto = testee.verify(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
         //then
-        verify(tokenProvider).createToken(eq(LocalDate.now().minusDays(3).toString()), anyString(), eq(SWISSCOVID_TOKEN));
+        verify(tokenProvider).createToken(eq(LocalDate.now().minusDays(3).toString()), anyString(), eq(DP3T_TOKEN));
         assertNotNull(responseDto.getAccessToken());
         assertEquals(TEST_ACCESS_TOKEN, responseDto.getAccessToken());
     }

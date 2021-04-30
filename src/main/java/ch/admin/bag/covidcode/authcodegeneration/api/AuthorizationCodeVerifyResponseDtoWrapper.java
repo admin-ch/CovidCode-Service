@@ -1,34 +1,31 @@
 package ch.admin.bag.covidcode.authcodegeneration.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AuthorizationCodeVerifyResponseDtoWrapper {
 
-  private AuthorizationCodeVerifyResponseDto swissCovidAccessToken;
-  private AuthorizationCodeVerifyResponseDto notifyMeAccessToken;
+  private AuthorizationCodeVerifyResponseDto dp3tAccessToken;
+  private AuthorizationCodeVerifyResponseDto checkInAccessToken;
 
-  public AuthorizationCodeVerifyResponseDtoWrapper(AuthorizationCodeVerifyResponseDto swissCovidAccessToken, AuthorizationCodeVerifyResponseDto notifyMeAccessToken) {
-    this.swissCovidAccessToken = swissCovidAccessToken;
-    this.notifyMeAccessToken = notifyMeAccessToken;
+  public AuthorizationCodeVerifyResponseDtoWrapper(AuthorizationCodeVerifyResponseDto dp3tAccessToken, AuthorizationCodeVerifyResponseDto checkInAccessToken) {
+    this.dp3tAccessToken = dp3tAccessToken;
+    this.checkInAccessToken = checkInAccessToken;
   }
 
   public AuthorizationCodeVerifyResponseDtoWrapper() {}
 
 
-  public AuthorizationCodeVerifyResponseDto getSwissCovidAccessToken() {
-    return swissCovidAccessToken;
+  public AuthorizationCodeVerifyResponseDto getDP3TAccessToken() {
+    return dp3tAccessToken;
   }
 
-  public void setSwissCovidAccessToken(AuthorizationCodeVerifyResponseDto swissCovidAccessToken) {
-    this.swissCovidAccessToken = swissCovidAccessToken;
+  public void setDP3TAccessToken(AuthorizationCodeVerifyResponseDto dp3tAccessToken) {
+    this.dp3tAccessToken = dp3tAccessToken;
   }
 
-  public AuthorizationCodeVerifyResponseDto getNotifyMeAccessToken() {
-    return notifyMeAccessToken;
+  public AuthorizationCodeVerifyResponseDto getCheckInAccessToken() {
+    return checkInAccessToken;
   }
 
-  public void setNotifyMeAccessToken(AuthorizationCodeVerifyResponseDto notifyMeAccessToken) {
-    this.notifyMeAccessToken = notifyMeAccessToken;
+  public void setCheckInAccessToken(AuthorizationCodeVerifyResponseDto checkInAccessToken) {
+    this.checkInAccessToken = checkInAccessToken;
   }
 }

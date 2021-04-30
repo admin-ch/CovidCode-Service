@@ -48,9 +48,9 @@ class AuthCodeVerificationControllerV2Test {
     void test_verify() throws Exception {
         //given
         AuthorizationCodeVerificationDto verificationDto = new AuthorizationCodeVerificationDto(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
-        AuthorizationCodeVerifyResponseDto swissCovidResponseDto = new AuthorizationCodeVerifyResponseDto(DUMMY_FOO);
-        AuthorizationCodeVerifyResponseDto notifyMeResponseDto = new AuthorizationCodeVerifyResponseDto(DUMMY_BAR);
-        final var expectedWrapper = new AuthorizationCodeVerifyResponseDtoWrapper(swissCovidResponseDto, notifyMeResponseDto);
+        AuthorizationCodeVerifyResponseDto dp3tResponseDto = new AuthorizationCodeVerifyResponseDto(DUMMY_FOO);
+        AuthorizationCodeVerifyResponseDto checkInResponseDto = new AuthorizationCodeVerifyResponseDto(DUMMY_BAR);
+        final var expectedWrapper = new AuthorizationCodeVerifyResponseDtoWrapper(dp3tResponseDto, checkInResponseDto);
         when(authCodeVerificationService.verify(anyString(), anyString(), anyBoolean())).thenReturn(expectedWrapper);
 
         //when
@@ -64,12 +64,12 @@ class AuthCodeVerificationControllerV2Test {
 
         //then
         final var actualWrapper = mapper.readValue(result.getResponse().getContentAsString(), AuthorizationCodeVerifyResponseDtoWrapper.class);
-        final var swissCovidAccessToken = actualWrapper.getSwissCovidAccessToken();
-        final var notifyMeAccessToken = actualWrapper.getNotifyMeAccessToken();
-        assertNotNull(swissCovidAccessToken, "Should return exactly two tokens for swissCovid and notifyMe backend");
-        assertNotNull(notifyMeAccessToken, "Should return exactly two tokens for swissCovid and notifyMe backend");
-        assertEquals(DUMMY_FOO, swissCovidAccessToken.getAccessToken());
-        assertEquals(DUMMY_BAR, notifyMeAccessToken.getAccessToken());
+        final var dp3tAccessToken = actualWrapper.getDP3TAccessToken();
+        final var checkInAccessToken = actualWrapper.getCheckInAccessToken();
+        assertNotNull(dp3tAccessToken, "Should return exactly two tokens for swissCovid and notifyMe backend");
+        assertNotNull(checkInAccessToken, "Should return exactly two tokens for swissCovid and notifyMe backend");
+        assertEquals(DUMMY_FOO, dp3tAccessToken.getAccessToken());
+        assertEquals(DUMMY_BAR, checkInAccessToken.getAccessToken());
     }
 
     @Test

@@ -17,7 +17,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Date;
 import java.util.UUID;
 
-import static ch.admin.bag.covidcode.authcodegeneration.api.TokenType.SWISSCOVID_TOKEN;
+import static ch.admin.bag.covidcode.authcodegeneration.api.TokenType.DP3T_TOKEN;
 
 @Component
 @Slf4j
@@ -40,7 +40,7 @@ public class CustomTokenProvider {
   }
 
   public String createToken(String onsetDate, String fake) {
-    return createToken(onsetDate, fake, SWISSCOVID_TOKEN);
+    return createToken(onsetDate, fake, DP3T_TOKEN);
   }
 
   public String createToken(String onsetDate, String fake, TokenType tokenType) {

@@ -16,8 +16,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ch.admin.bag.covidcode.authcodegeneration.api.TokenType.NOTIFYME_TOKEN;
-import static ch.admin.bag.covidcode.authcodegeneration.api.TokenType.SWISSCOVID_TOKEN;
+import static ch.admin.bag.covidcode.authcodegeneration.api.TokenType.CHECKIN_USERUPLOAD_TOKEN;
+import static ch.admin.bag.covidcode.authcodegeneration.api.TokenType.DP3T_TOKEN;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Service
@@ -37,35 +37,35 @@ public class AuthCodeVerificationService {
   @Transactional
   public AuthorizationCodeVerifyResponseDto verify(String code, String fake) {
     final var accessTokens = verify(code, fake, false);
-    return accessTokens.getSwissCovidAccessToken();
+    return accessTokens.getDP3TAccessToken();
   }
 
   /**
    * @param code Authorization code as provided by the health authority
    * @param fake String to request fake token
-   * @param needNotifyMeToken Needs a second token for purple (notifyMe) backend
+   * @param needCheckInToken Needs a second token for purple (checkIn) backend
    * @return a wrapper containing two access tokens, which are null if authCode is invalid
    */
   @Transactional
   public AuthorizationCodeVerifyResponseDtoWrapper verify(
-      String code, String fake, boolean needNotifyMeToken) {
+      String code, String fake, boolean needCheckInToken) {
     final var accessTokens = new AuthorizationCodeVerifyResponseDtoWrapper();
     if (FAKE_STRING.equals(fake)) {
-      final var swissCovidToken =
+      final var dp3tToken =
           new AuthorizationCodeVerifyResponseDto(
               tokenProvider.createToken(
                   AuthorizationCode.createFake().getOnsetDate().format(DATE_FORMATTER),
                   FAKE_STRING,
-                  SWISSCOVID_TOKEN));
-      accessTokens.setSwissCovidAccessToken(swissCovidToken);
-      if (needNotifyMeToken) {
-        final var notifyMeToken =
+                  DP3T_TOKEN));
+      accessTokens.setDP3TAccessToken(dp3tToken);
+      if (needCheckInToken) {
+        final var checkInToken =
             new AuthorizationCodeVerifyResponseDto(
                 tokenProvider.createToken(
                     AuthorizationCode.createFake().getOnsetDate().format(DATE_FORMATTER),
                     FAKE_STRING,
-                    NOTIFYME_TOKEN));
-        accessTokens.setNotifyMeAccessToken(notifyMeToken);
+                    CHECKIN_USERUPLOAD_TOKEN));
+        accessTokens.setCheckInAccessToken(checkInToken);
       }
       return accessTokens;
     }
@@ -98,14 +98,14 @@ public class AuthCodeVerificationService {
     final var swissCovidToken =
         new AuthorizationCodeVerifyResponseDto(
             tokenProvider.createToken(
-                existingCode.getOnsetDate().format(DATE_FORMATTER), fake, SWISSCOVID_TOKEN));
-    accessTokens.setSwissCovidAccessToken(swissCovidToken);
-    if (needNotifyMeToken) {
-      final var notifyMeToken =
+                existingCode.getOnsetDate().format(DATE_FORMATTER), fake, DP3T_TOKEN));
+    accessTokens.setDP3TAccessToken(swissCovidToken);
+    if (needCheckInToken) {
+      final var checkInToken =
           new AuthorizationCodeVerifyResponseDto(
               tokenProvider.createToken(
-                  existingCode.getOnsetDate().format(DATE_FORMATTER), fake, NOTIFYME_TOKEN));
-      accessTokens.setNotifyMeAccessToken(notifyMeToken);
+                  existingCode.getOnsetDate().format(DATE_FORMATTER), fake, CHECKIN_USERUPLOAD_TOKEN));
+      accessTokens.setCheckInAccessToken(checkInToken);
     }
     return accessTokens;
   }
