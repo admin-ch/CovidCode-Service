@@ -29,11 +29,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.requestMatchers().
-                antMatchers("/actuator/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/v1/onset/**").
+                antMatchers("/actuator/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/v1/onset/**", "/v2/onset/**").
                 and().
                 authorizeRequests().anyRequest().permitAll();
 
-        http.csrf().ignoringAntMatchers("/v1/onset/**");
+        http.csrf().ignoringAntMatchers("/v1/onset/**", "/v2/onset/**");
     }
 
     @Bean
