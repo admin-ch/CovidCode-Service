@@ -36,7 +36,7 @@ public class AuthCodeVerificationControllerV2 {
         log.debug("Call of Verify with authCode '{}'.", verificationDto.getAuthorizationCode());
         final AuthorizationCodeVerifyResponseDtoWrapper accessTokenWrapper = authCodeVerificationService.verify(verificationDto.getAuthorizationCode(), verificationDto.getFake(), true);
         normalizeRequestTime(now);
-        if (accessTokenWrapper.getDP3TAccessToken() == null || accessTokenWrapper.getCheckInAccessToken() == null) {
+        if (accessTokenWrapper == null || accessTokenWrapper.getDP3TAccessToken() == null || accessTokenWrapper.getCheckInAccessToken() == null) {
             throw new ResourceNotFoundException(null);
         }
         return ResponseEntity.ok().body(accessTokenWrapper);
