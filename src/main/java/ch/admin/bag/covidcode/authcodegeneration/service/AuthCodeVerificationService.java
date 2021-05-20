@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcode.authcodegeneration.service;
 
+import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeOnsetResponseDto;
 import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeVerifyResponseDto;
 import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeVerifyResponseDtoWrapper;
 import ch.admin.bag.covidcode.authcodegeneration.api.TokenType;
@@ -108,6 +109,30 @@ public class AuthCodeVerificationService {
       accessTokens.setCheckInAccessToken(checkInToken);
     }
     return accessTokens;
+  }
+
+  /**
+   * @param authorizationCode Authorization code as provided by the health authority
+   * @param fake String to request fake token
+   * @return object containing a formatted string representing the onset date, or null if auth code is invalid
+   */
+  @Transactional(readOnly = true)
+  public AuthorizationCodeOnsetResponseDto getOnsetForAuthCode(String authorizationCode, String fake) {
+    if (FAKE_STRING.equals(fake)) {
+      return new AuthorizationCodeOnsetResponseDto(AuthorizationCode.createFake().getOnsetDate().format(DATE_FORMATTER));
+    }
+    AuthorizationCode existingCode = authorizationCodeRepository.findByCode(authorizationCode).orElse(null);
+    if (existingCode == null) {
+      log.error("No AuthCode found with code '{}'", authorizationCode);
+      return new AuthorizationCodeOnsetResponseDto(null);
+    } else if (codeValidityHasExpired(existingCode.getExpiryDate())) {
+      log.error("AuthCode '{}' expired at {}", authorizationCode, existingCode.getExpiryDate());
+      return new AuthorizationCodeOnsetResponseDto(null);
+    } else if (existingCode.getCallCount() >= this.callCountLimit) {
+      log.error("AuthCode '{}' reached call limit {}", authorizationCode, existingCode.getCallCount());
+      return new AuthorizationCodeOnsetResponseDto(null);
+    }
+    return new AuthorizationCodeOnsetResponseDto(existingCode.getOnsetDate().format(DATE_FORMATTER));
   }
 
   private boolean codeValidityHasExpired(ZonedDateTime expiryDate) {
