@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcode.authcodegeneration.service;
 
+import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeOnsetResponseDto;
 import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeVerifyResponseDto;
 import ch.admin.bag.covidcode.authcodegeneration.api.TokenType;
 import ch.admin.bag.covidcode.authcodegeneration.domain.AuthorizationCode;
@@ -202,6 +203,25 @@ class AuthCodeVerificationServiceTest {
         testee.verify(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
         //then
         assertNull(testee.getOnsetForAuthCode(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE).getOnset());
+    }
+
+    @Test
+    void test_getOnset_and_verify() {
+        //given
+        final var onsetAsDate = LocalDate.now().minusDays(3);
+        final var onsetAsString = onsetAsDate.format(DateTimeFormatter.ofPattern("YYYY-MM-dd"));
+        AuthorizationCode authCode = new AuthorizationCode(TEST_AUTHORIZATION_CODE, LocalDate.now(), onsetAsDate, ZonedDateTime.now().plusSeconds(CODE_EXPIRATION_DELAY_IN_SECONDS));
+        ReflectionTestUtils.setField(testee, CALL_COUNT_LIMIT_KEY, 1);
+        when(repository.findByCode(anyString())).thenReturn(Optional.of(authCode));
+        when(tokenProvider.createToken(anyString(), anyString(), any())).thenReturn(TEST_ACCESS_TOKEN);
+        //when
+        final AuthorizationCodeOnsetResponseDto onsetResponse = testee.getOnsetForAuthCode(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
+        final AuthorizationCodeVerifyResponseDto verifyResponse = testee.verify(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
+        //then
+        assertNotNull(onsetResponse.getOnset());
+        assertEquals(onsetAsString, onsetResponse.getOnset());
+        assertNotNull(verifyResponse.getAccessToken());
+        assertEquals(TEST_ACCESS_TOKEN, verifyResponse.getAccessToken());
     }
 
 }
