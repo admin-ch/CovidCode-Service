@@ -45,9 +45,17 @@ public class AuthCodeVerificationControllerV2 {
 
     @Operation(summary = "Get onset date for authorization code")
     @PostMapping(value="/date")
-    public AuthorizationCodeOnsetResponseDto getOnset(@Valid @RequestBody AuthorizationCodeVerificationDto verificationDto) {
-        // TODO: Return JSON Object containing onset as String
-        return null;
+    public ResponseEntity<AuthorizationCodeOnsetResponseDto> getOnset(@Valid @RequestBody AuthorizationCodeVerificationDto verificationDto) {
+        var now = Instant.now().toEpochMilli();
+        log.debug("Call of getOnset with authCode '{}'.", verificationDto.getAuthorizationCode());
+        final AuthorizationCodeOnsetResponseDto onsetWrapper =
+            authCodeVerificationService.getOnsetForAuthCode(
+                verificationDto.getAuthorizationCode(), verificationDto.getFake());
+        if (onsetWrapper == null || onsetWrapper.getOnset() == null) {
+            throw new ResourceNotFoundException(null);
+        }
+        // TODO: Normalize request time?
+        return ResponseEntity.ok().body(onsetWrapper);
     }
 
     private void normalizeRequestTime(long now) {

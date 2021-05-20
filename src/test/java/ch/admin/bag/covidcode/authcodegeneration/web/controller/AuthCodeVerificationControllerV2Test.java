@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcode.authcodegeneration.web.controller;
 
+import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeOnsetResponseDto;
 import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeVerificationDto;
 import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeVerifyResponseDto;
 import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeVerifyResponseDtoWrapper;
@@ -28,7 +29,9 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 class AuthCodeVerificationControllerV2Test {
 
     private static final String URL = "/v2/onset";
+    private static final String URL_ONSET = "/v2/onset/date";
     private static final String TEST_AUTHORIZATION_CODE = "123456789";
+    private static final String TEST_ONSET_DATE = "1970-01-01";
     private static final String DUMMY_FOO = "foo";
     private static final String DUMMY_BAR = "bar";
     private static final String FAKE_NOT_FAKE = "0";
@@ -81,6 +84,45 @@ class AuthCodeVerificationControllerV2Test {
 
         //when
         mockMvc.perform(post(URL)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", TEST_AUTHORIZATION_CODE)
+                .content(mapper.writeValueAsString(verificationDto)))
+                .andExpect(status().is(404));
+    }
+
+    @Test
+    void test_getOnset() throws Exception {
+        //given
+        AuthorizationCodeVerificationDto verificationDto = new AuthorizationCodeVerificationDto(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
+        final var expectedResponse = new AuthorizationCodeOnsetResponseDto(TEST_ONSET_DATE);
+        when(authCodeVerificationService.getOnsetForAuthCode(anyString(), anyString())).thenReturn(expectedResponse);
+
+        //when
+        MvcResult result = mockMvc.perform(post(URL_ONSET)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", TEST_AUTHORIZATION_CODE)
+                .content(mapper.writeValueAsString(verificationDto)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        //then
+        final var actualResponse = mapper.readValue(result.getResponse().getContentAsString(), AuthorizationCodeOnsetResponseDto.class);
+        final var onset = actualResponse.getOnset();
+        assertNotNull(onset, "Should return a non-null onset date");
+        assertEquals(TEST_ONSET_DATE, onset);
+    }
+
+    @Test
+    void test_getOnset_not_found_exception() throws Exception {
+        //given
+        AuthorizationCodeVerificationDto verificationDto = new AuthorizationCodeVerificationDto(TEST_AUTHORIZATION_CODE, FAKE_NOT_FAKE);
+
+        when(authCodeVerificationService.getOnsetForAuthCode(anyString(), anyString())).thenReturn(new AuthorizationCodeOnsetResponseDto(null));
+
+        //when
+        mockMvc.perform(post(URL_ONSET)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header("Authorization", TEST_AUTHORIZATION_CODE)
