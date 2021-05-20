@@ -54,7 +54,7 @@ public class AuthCodeVerificationControllerV2 {
         if (onsetWrapper == null || onsetWrapper.getOnset() == null) {
             throw new ResourceNotFoundException(null);
         }
-        // TODO: Normalize request time?
+        normalizeRequestTime(now);
         return ResponseEntity.ok().body(onsetWrapper);
     }
 
