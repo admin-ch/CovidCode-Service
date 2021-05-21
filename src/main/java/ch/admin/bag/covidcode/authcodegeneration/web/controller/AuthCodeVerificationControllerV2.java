@@ -1,5 +1,6 @@
 package ch.admin.bag.covidcode.authcodegeneration.web.controller;
 
+import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeOnsetResponseDto;
 import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeVerificationDto;
 import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeVerifyResponseDto;
 import ch.admin.bag.covidcode.authcodegeneration.api.AuthorizationCodeVerifyResponseDtoWrapper;
@@ -40,6 +41,21 @@ public class AuthCodeVerificationControllerV2 {
             throw new ResourceNotFoundException(null);
         }
         return ResponseEntity.ok().body(accessTokenWrapper);
+    }
+
+    @Operation(summary = "Get onset date for authorization code")
+    @PostMapping(value="/date")
+    public ResponseEntity<AuthorizationCodeOnsetResponseDto> getOnset(@Valid @RequestBody AuthorizationCodeVerificationDto verificationDto) {
+        var now = Instant.now().toEpochMilli();
+        log.debug("Call of getOnset with authCode '{}'.", verificationDto.getAuthorizationCode());
+        final AuthorizationCodeOnsetResponseDto onsetWrapper =
+            authCodeVerificationService.getOnsetForAuthCode(
+                verificationDto.getAuthorizationCode(), verificationDto.getFake());
+        if (onsetWrapper == null || onsetWrapper.getOnset() == null) {
+            throw new ResourceNotFoundException(null);
+        }
+        normalizeRequestTime(now);
+        return ResponseEntity.ok().body(onsetWrapper);
     }
 
     private void normalizeRequestTime(long now) {
