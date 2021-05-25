@@ -51,10 +51,10 @@ public class AuthCodeVerificationControllerV2 {
         final AuthorizationCodeOnsetResponseDto onsetWrapper =
             authCodeVerificationService.getOnsetForAuthCode(
                 verificationDto.getAuthorizationCode(), verificationDto.getFake());
+        normalizeRequestTime(now);
         if (onsetWrapper == null || onsetWrapper.getOnset() == null) {
             throw new ResourceNotFoundException(null);
         }
-        normalizeRequestTime(now);
         return ResponseEntity.ok().body(onsetWrapper);
     }
 
