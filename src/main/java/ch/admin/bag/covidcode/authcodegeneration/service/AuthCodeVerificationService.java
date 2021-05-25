@@ -116,7 +116,7 @@ public class AuthCodeVerificationService {
    * @param fake String to request fake token
    * @return object containing a formatted string representing the onset date, or null if auth code is invalid
    */
-  @Transactional(readOnly = true)
+  @Transactional(readOnly = false) // it only reads, but doing so we do not need to dupplicate the findByCode method in the repository
   public AuthorizationCodeOnsetResponseDto getOnsetForAuthCode(String authorizationCode, String fake) {
     if (FAKE_STRING.equals(fake)) {
       return new AuthorizationCodeOnsetResponseDto(AuthorizationCode.createFake().getOnsetDate().format(DATE_FORMATTER));
