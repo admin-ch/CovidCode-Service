@@ -28,7 +28,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class AuthCodeVerificationService {
 
   private static final String FAKE_STRING = "1";
-  private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("YYYY-MM-dd");
+  private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
   private final AuthorizationCodeRepository authorizationCodeRepository;
   private final CustomTokenProvider tokenProvider;
 
