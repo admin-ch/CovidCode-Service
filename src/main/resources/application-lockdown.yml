@@ -4,20 +4,7 @@ lockdown:
       uri: v1/authcode
       applicable:
         -
-          from:  2022-03-09T00:00:00.000Z
-          until: 2020-03-09T23:59:59.000Z
-        -
-          from:  2022-03-17T00:00:00.000Z
-          until: 2020-03-17T23:59:59.000Z
+          from:  2022-03-22T00:00:00.000Z
+          until: 2020-03-23T23:59:59.000Z
         -
           from:  2022-04-01T00:00:00.000Z
-
-
-xxlockdowns:
-  - uri: covidcertificate/vaccination-tourist
-    applicable:
-      - from:  2022-03-09T00:00:00.000Z
-        until: 2020-03-09T23:59:59.000Z
-      - from:  2022-03-17T00:00:00.000Z
-        until: 2020-03-17T23:59:59.000Z
-      - from:  2022-04-01T00:00:00.000Z
