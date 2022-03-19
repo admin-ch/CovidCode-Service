@@ -30,7 +30,7 @@ public class LockdownInterceptor implements HandlerInterceptor {
     protected boolean isUriLocked(LocalDateTime now, String requestUri, List<Endpoint> endpoints) {
 
         String uri = removeTrailingLeading(requestUri, '/');
-        log.debug("called uri '{}' intercepted by #{}", uri, this.hashCode());
+        log.debug("intercepting call to uri '{}'", uri);
 
         Optional<Endpoint.FromUntil> result = endpoints.stream()
                 // check for restrictions on given url
