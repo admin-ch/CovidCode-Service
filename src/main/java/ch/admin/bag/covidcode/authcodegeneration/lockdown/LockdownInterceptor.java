@@ -54,7 +54,8 @@ public class LockdownInterceptor implements HandlerInterceptor {
         LocalDateTime from = (fromUntil.getFrom() == null ? LocalDateTime.MIN : fromUntil.getFrom());
         LocalDateTime until = (fromUntil.getUntil() == null ? LocalDateTime.MAX : fromUntil.getUntil());
 
-        return Range.between(from, until).contains(now);
+        boolean isBetween = Range.between(from, until).contains(now);
+        return isBetween;
     }
 
     private boolean sameUri(String requestUri, Endpoint endpoint) {
