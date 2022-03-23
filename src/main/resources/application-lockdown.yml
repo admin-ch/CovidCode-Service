@@ -1,3 +1,30 @@
+
+# the order of active profiles is IMPORTANT:   SPRING_PROFILES_ACTIVE: prod,lockdown
+# ONLY this activates the lockdowwn configuration for the profile prod
+# reversed order will simply activate lockdown configuration of abn for EVERY environment!
+
+---
+spring.profiles: prod,local
+lockdown:
+  endpoints:
+    -
+      uri: v1/authcode
+      applicable:
+        -
+          from:  2022-04-01T00:00:00.000Z
+    -
+      uri: v1/onset
+      applicable:
+        -
+          from:  2022-04-01T00:00:00.000Z
+    -
+      uri: v2/onset
+      applicable:
+        -
+          from:  2022-04-01T00:00:00.000Z
+
+---
+spring.profiles: abn
 lockdown:
   endpoints:
     -
@@ -7,7 +34,7 @@ lockdown:
           from:  2022-03-22T00:00:00.000Z
           until: 2022-03-23T23:59:59.000Z
         -
-          from:  2022-04-01T00:00:00.000Z
+          from:  2022-03-28T00:00:00.000Z
     -
       uri: v1/onset
       applicable:
@@ -15,7 +42,7 @@ lockdown:
           from:  2022-03-22T00:00:00.000Z
           until: 2022-03-23T23:59:59.000Z
         -
-          from:  2022-04-01T00:00:00.000Z
+          from:  2022-03-28T00:00:00.000Z
     -
       uri: v2/onset
       applicable:
@@ -23,4 +50,4 @@ lockdown:
           from:  2022-03-22T00:00:00.000Z
           until: 2022-03-23T23:59:59.000Z
         -
-          from:  2022-04-01T00:00:00.000Z
+          from:  2022-03-28T00:00:00.000Z
