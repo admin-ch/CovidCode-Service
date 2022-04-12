@@ -114,7 +114,7 @@ authcodegeneration:
     service:
         callCountLimit: 1
         codeExpirationDelay: 1440
-        deletionCron: "0 0 2 * * ?"
+        deletionCron: "0 55 1 * * ?"
         onsetSubtractionDays: 2
         requestTime: 500
         sleepLogInterval: 30000
