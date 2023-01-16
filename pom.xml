@@ -23,7 +23,7 @@
 		<janino.version>3.1.9</janino.version>
 		<jsonwebtoken.version>0.11.5</jsonwebtoken.version>
 		<snakeyaml.version>1.33</snakeyaml.version>
-<!--		<lombok.version>1.18.20</lombok.version>-->
+		<java-cfenv-boot.version>2.4.1</java-cfenv-boot.version>
 
 		<springdoc.version>1.6.14</springdoc.version>
 		<jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
@@ -173,6 +173,12 @@
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
 			<version>${snakeyaml.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.pivotal.cfenv</groupId>
+			<artifactId>java-cfenv-boot</artifactId>
+			<version>${java-cfenv-boot.version}</version>
 		</dependency>
 
 		<!-- test Dependencies -->

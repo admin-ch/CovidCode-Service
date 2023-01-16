@@ -61,6 +61,7 @@ spring:
         password: secret
         hikari:
             maximum-pool-size: 10
+            minimum-idle: 2
             pool-name: hikari-cp-${spring.application.name}
     jpa:
         hibernate:
