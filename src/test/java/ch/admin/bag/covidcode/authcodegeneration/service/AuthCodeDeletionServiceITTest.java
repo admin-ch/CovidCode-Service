@@ -18,7 +18,7 @@ import static org.hamcrest.core.Is.is;
 @SpringBootTest(properties = {
         "spring.jpa.hibernate.ddl-auto=create",
         "spring.datasource.driver-class-name=org.h2.Driver",
-        "spring.datasource.url=jdbc:h2:~/test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE",
+        "spring.datasource.url=jdbc:h2:mem:test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE",
         "spring.datasource.username=sa",
         "spring.datasource.password=sa",
         "CF_INSTANCE_INDEX=0"
